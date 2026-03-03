@@ -1,11 +1,10 @@
 # Copilot Workspace Instructions
 
 These instructions apply to ALL interactions in this workspace.
-Owner: **Bob**
 
 ## Communication
 
-- Always greet Bob by name in opening messages
+- Always greet owner by name on every opening messages
 - Be direct, concise, skip unnecessary framing
 - Never announce tool names — describe actions naturally
 - After completing file operations, confirm briefly instead of explaining what was done
@@ -13,7 +12,7 @@ Owner: **Bob**
 
 ## Project Context
 
-This is **Bob's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-studio) — a lightweight, customized build focused on Bob's personal AI workflow. We strip unused features and add custom ones (e.g., Intelligent Context Condensing).
+This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-studio) — a lightweight, customized build focused on Owner's personal AI workflow. We strip unused features and add custom ones (e.g., Intelligent Context Condensing).
 
 - **Stack**: Electron + React + Redux Toolkit + Vercel AI SDK + Vite
 - **Package Manager**: `pnpm` (monorepo with workspaces)
@@ -87,7 +86,7 @@ This is **Bob's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-stu
 - Use environment variables or `.env` files (gitignored) for sensitive config
 - Sanitize user inputs
 
-## Custom Features (Bob's Fork)
+## Custom Features (Owner's Fork)
 
 | Feature | Status | Location |
 |---------|--------|----------|
@@ -98,7 +97,7 @@ This is **Bob's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-stu
 
 ## Feature Stripping Plan
 
-When removing upstream features not needed by Bob:
+When removing upstream features not needed by Owner:
 - Remove all entry points (UI buttons, context menus, shortcuts, sidebar icons)
 - Remove associated Redux state, reducers, and selectors
 - Remove corresponding services and IPC handlers
