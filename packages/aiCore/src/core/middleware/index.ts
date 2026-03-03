@@ -6,3 +6,4 @@
 export { createMiddlewares } from './manager'
 export type { NamedMiddleware } from './types'
 export { wrapModelWithMiddlewares } from './wrapper'
+export { createCondenseContextMiddleware, type CondenseContextOptions } from './condense'
