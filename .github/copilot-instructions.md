@@ -47,9 +47,12 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - Commit after each working milestone, not in huge batches
 
 ### Versioning
-- Use semantic `MAJOR.MINOR.PATCH` format (e.g. `1.7.22`)
+- Bob's fork starts from `0.x.y` — independent of upstream Cherry Studio versioning
+- `0.MINOR.0` — new feature (e.g., `0.1.0` = context condensing)
+- `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
 - Bump version in `package.json`
-- Tag releases when publishing: `git tag vX.Y.Z && git push --tags`
+- Tag releases when publishing: `git tag v0.X.Y && git push --tags`
+- Current version: **0.1.0**
 
 ### Things to Never Commit
 - Debug/test files, `.env` files, secrets
