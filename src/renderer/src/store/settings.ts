@@ -248,6 +248,9 @@ export interface SettingsState {
   // API Server
   apiServer: ApiServerConfig
   showMessageOutline: boolean
+  // Context Condensing
+  isContextCondensingEnabled: boolean
+  contextCondenseThreshold: number
 }
 
 export type MultiModelMessageStyle = 'horizontal' | 'vertical' | 'fold' | 'grid'
@@ -440,6 +443,9 @@ export const initialState: SettingsState = {
 
   // Developer mode
   enableDeveloperMode: false,
+  // Context Condensing
+  isContextCondensingEnabled: false,
+  contextCondenseThreshold: 10,
   // UI
   navbarPosition: 'top',
   // API Server
@@ -899,6 +905,13 @@ const settingsSlice = createSlice({
     },
     setShowMessageOutline: (state, action: PayloadAction<boolean>) => {
       state.showMessageOutline = action.payload
+    },
+    // Context Condensing actions
+    setIsContextCondensingEnabled: (state, action: PayloadAction<boolean>) => {
+      state.isContextCondensingEnabled = action.payload
+    },
+    setContextCondenseThreshold: (state, action: PayloadAction<number>) => {
+      state.contextCondenseThreshold = action.payload
     }
   }
 })
@@ -1033,7 +1046,10 @@ export const {
   // API Server actions
   setApiServerEnabled,
   setApiServerPort,
-  setApiServerApiKey
+  setApiServerApiKey,
+  // Context Condensing
+  setIsContextCondensingEnabled,
+  setContextCondenseThreshold
 } = settingsSlice.actions
 
 export default settingsSlice.reducer

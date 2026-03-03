@@ -21,6 +21,9 @@ import { searchOrchestrationPlugin } from './searchOrchestrationPlugin'
 import { createSimulateStreamingPlugin } from './simulateStreamingPlugin'
 import { createSkipGeminiThoughtSignaturePlugin } from './skipGeminiThoughtSignaturePlugin'
 import { createTelemetryPlugin } from './telemetryPlugin'
+import { createCondenseContextPlugin } from './condenseContextPlugin'
+import { getStoreSetting } from '@renderer/hooks/useSettings'
+import { createAiSdkProvider } from '../provider/factory'
 
 const logger = loggerService.withContext('PluginBuilder')
 
@@ -131,9 +134,22 @@ export function buildPlugins({ provider, model, config }: BuildPluginsContext): 
     )
   }
 
-  // if (config.enableUrlContext && config.) {
-  //   plugins.push(googleToolsPlugin({ urlContext: true }))
-  // }
+  // 5. Intelligent Context Condensation
+  const isContextCondensingEnabled = getStoreSetting('isContextCondensingEnabled')
+  if (isContextCondensingEnabled) {
+    const contextCondenseThreshold = getStoreSetting('contextCondenseThreshold')
+    // Get default model for summarization, or fallback to current model
+    const aiSdkId = getAiSdkProviderId(provider)
+    const summaryModel = createAiSdkProvider(aiSdkId)(model.id)
+    
+    plugins.push(
+      createCondenseContextPlugin({
+        summaryModel,
+        maxMessagesThreshold: contextCondenseThreshold,
+        preserveRecentCount: 4
+      })
+    )
+  }
 
   logger.debug(
     'Final plugin list:',

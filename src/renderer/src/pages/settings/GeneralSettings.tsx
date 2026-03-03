@@ -17,7 +17,9 @@ import {
   setProxyBypassRules as _setProxyBypassRules,
   setProxyMode,
   setProxyUrl as _setProxyUrl,
-  setSpellCheckLanguages
+  setSpellCheckLanguages,
+  setIsContextCondensingEnabled,
+  setContextCondenseThreshold
 } from '@renderer/store/settings'
 import type { LanguageVarious } from '@renderer/types'
 import type { NotificationSource } from '@renderer/types/notification'
@@ -64,7 +66,9 @@ const GeneralSettings: FC = () => {
     enableDataCollection,
     enableSpellCheck,
     disableHardwareAcceleration,
-    setDisableHardwareAcceleration
+    setDisableHardwareAcceleration,
+    isContextCondensingEnabled,
+    contextCondenseThreshold
   } = useSettings()
   const [proxyUrl, setProxyUrl] = useState<string | undefined>(storeProxyUrl)
   const [proxyBypassRules, setProxyBypassRules] = useState<string | undefined>(storeProxyBypassRules)
@@ -162,6 +166,17 @@ const GeneralSettings: FC = () => {
   const handleSpellCheckLanguagesChange = (selectedLanguages: string[]) => {
     dispatch(setSpellCheckLanguages(selectedLanguages))
     window.api.setSpellCheckLanguages(selectedLanguages)
+  }
+
+  const handleContextCondensingChange = (checked: boolean) => {
+    dispatch(setIsContextCondensingEnabled(checked))
+  }
+
+  const handleContextCondenseThresholdChange = (value: string) => {
+    const parsed = parseInt(value, 10)
+    if (!isNaN(parsed) && parsed > 0) {
+      dispatch(setContextCondenseThreshold(parsed))
+    }
   }
 
   const handleHardwareAccelerationChange = (checked: boolean) => {
@@ -284,6 +299,23 @@ const GeneralSettings: FC = () => {
             )}
           </HStack>
           <Switch checked={enableSpellCheck} onChange={handleSpellCheckChange} />
+        </SettingRow>
+        <SettingDivider />
+        <SettingRow>
+          <SettingRowTitle>Intelligent Context Condensing</SettingRowTitle>
+          <Flex gap={8} align="center">
+            {isContextCondensingEnabled && (
+              <Input 
+                type="number" 
+                min={5} 
+                max={100}
+                value={contextCondenseThreshold}
+                onChange={(e) => handleContextCondenseThresholdChange(e.target.value)}
+                style={{ width: 60 }}
+              />
+            )}
+            <Switch checked={isContextCondensingEnabled} onChange={handleContextCondensingChange} />
+          </Flex>
         </SettingRow>
         <SettingDivider />
         <SettingRow>
