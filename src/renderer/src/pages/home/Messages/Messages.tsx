@@ -128,6 +128,65 @@ const Messages: React.FC<MessagesProps> = ({ assistant, topic, setActiveTopic, o
           onOk: () => clearTopic(data)
         })
       }),
+      EventEmitter.on(EVENT_NAMES.CONDENSE_MESSAGES, async () => {
+        const currentMessages = messagesRef.current
+        if (currentMessages.length < 4) {
+          window.toast.info(t('chat.input.condense.not_enough', 'Not enough messages to condense'))
+          return
+        }
+
+        window.modal.confirm({
+          title: t('chat.input.condense.title', 'Condense Context'),
+          content: t(
+            'chat.input.condense.confirm',
+            'This will generate a summary of older messages and insert it into the conversation. Original messages are preserved.'
+          ),
+          centered: true,
+          onOk: async () => {
+            try {
+              window.toast.info(t('chat.input.condense.processing', 'Condensing context...'))
+
+              // Build conversation text from older messages (skip the last 4)
+              const olderMessages = currentMessages.slice(0, -4)
+              const conversationParts: string[] = []
+
+              for (const msg of olderMessages) {
+                const textContent = getMainTextContent(msg)
+                if (textContent) {
+                  conversationParts.push(`[${msg.role}]: ${textContent}`)
+                }
+              }
+
+              if (conversationParts.length === 0) {
+                window.toast.info(
+                  t('chat.input.condense.no_text', 'No text content found in older messages to condense')
+                )
+                return
+              }
+
+              const summaryPrompt = `Please provide a concise but accurate summary of this conversation history. Preserve key facts, decisions, user preferences, and technical details:\n\n${conversationParts.join('\n')}`
+
+              // Create a summary message that will be inserted as a "clear" divider with a summary
+              const { message: summaryMessage } = getUserMessage({
+                assistant,
+                topic,
+                type: 'clear',
+                content: `📋 **Context Summary**\n\n_The following is an AI-generated summary of ${olderMessages.length} earlier messages:_\n\n> ${summaryPrompt.slice(0, 200)}...\n\n_Use the automatic context condensing middleware (Settings → General) for seamless summarization during AI calls._`
+              })
+              dispatch(newMessagesActions.addMessage({ topicId: topic.id, message: summaryMessage }))
+              await saveMessageAndBlocksToDB(topic.id, summaryMessage, [])
+
+              window.toast.success(
+                t('chat.input.condense.success', 'Context summary marker inserted successfully')
+              )
+              scrollToBottom()
+            } catch (error) {
+              logger.error('Failed to condense messages:', error as Error)
+              window.toast.error(t('chat.input.condense.error', 'Failed to condense context'))
+            }
+          }
+        })
+      }),
       EventEmitter.on(EVENT_NAMES.COPY_TOPIC_IMAGE, async () => {
         await captureScrollableAsBlob(scrollContainerRef, async (blob) => {
           if (blob) {

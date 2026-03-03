@@ -12,6 +12,7 @@ import './knowledgeBaseTool'
 import './mcpToolsTool'
 import './generateImageTool'
 import './clearTopicTool'
+import './condenseMessagesTool'
 import './toggleExpandTool'
 import './newContextTool'
 // Agent Session tools
