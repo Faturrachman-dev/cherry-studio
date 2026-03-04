@@ -4,6 +4,7 @@ import type OpenAI from '@cherrystudio/openai'
 import type { GenerateImagesConfig, GroundingMetadata, PersonGeneration } from '@google/genai'
 import type { CSSProperties } from 'react'
 
+export * from './apiServer'
 export * from './file'
 export * from './note'
 
@@ -19,11 +20,9 @@ import type { BaseTool, MCPTool } from './tool'
 
 export * from './agent'
 export * from './apiModels'
-export * from './apiServer'
 export * from './knowledge'
 export * from './mcp'
 export * from './notification'
-export * from './ocr'
 export * from './plugin'
 export * from './provider'
 export * from './serialize'
@@ -655,7 +654,6 @@ export const isAutoDetectionMethod = (method: string): method is AutoDetectionMe
 export type SidebarIcon =
   | 'assistants'
   | 'store'
-  | 'paintings'
   | 'translate'
   | 'minapp'
   | 'knowledge'

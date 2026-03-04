@@ -19,7 +19,6 @@ import path from 'node:path'
 import type { RAGApplication } from '@cherrystudio/embedjs'
 import { RAGApplicationBuilder } from '@cherrystudio/embedjs'
 import { LibSqlDb } from '@cherrystudio/embedjs-libsql'
-import { SitemapLoader } from '@cherrystudio/embedjs-loader-sitemap'
 import { WebLoader } from '@cherrystudio/embedjs-loader-web'
 import { loggerService } from '@logger'
 import Embeddings from '@main/knowledge/embedjs/embeddings/Embeddings'
@@ -454,49 +453,6 @@ class KnowledgeService {
     return loaderTask
   }
 
-  private sitemapTask(
-    ragApplication: RAGApplication,
-    options: KnowledgeBaseAddItemOptionsNonNullableAttribute
-  ): LoaderTask {
-    const { base, item, forceReload } = options
-    const content = item.content as string
-
-    const loaderTask: LoaderTask = {
-      loaderTasks: [
-        {
-          state: LoaderTaskItemState.PENDING,
-          task: () =>
-            ragApplication
-              .addLoader(
-                new SitemapLoader({ url: content, chunkSize: base.chunkSize, chunkOverlap: base.chunkOverlap }) as any,
-                forceReload
-              )
-              .then((result) => {
-                const { entriesAdded, uniqueId, loaderType } = result
-                loaderTask.loaderDoneReturn = {
-                  entriesAdded: entriesAdded,
-                  uniqueId: uniqueId,
-                  uniqueIds: [uniqueId],
-                  loaderType: loaderType
-                }
-                return result
-              })
-              .catch((err) => {
-                logger.error('Failed to add sitemap loader:', err)
-                return {
-                  ...KnowledgeService.ERROR_LOADER_RETURN,
-                  message: `Failed to add sitemap loader: ${err.message}`,
-                  messageSource: 'embedding'
-                }
-              }),
-          evaluateTaskWorkload: { workload: 20 * MB }
-        }
-      ],
-      loaderDoneReturn: null
-    }
-    return loaderTask
-  }
-
   private noteTask(
     ragApplication: RAGApplication,
     options: KnowledgeBaseAddItemOptionsNonNullableAttribute
@@ -617,8 +573,6 @@ class KnowledgeService {
                 return this.directoryTask(ragApplication, optionsNonNullableAttribute)
               case 'url':
                 return this.urlTask(ragApplication, optionsNonNullableAttribute)
-              case 'sitemap':
-                return this.sitemapTask(ragApplication, optionsNonNullableAttribute)
               case 'note':
                 return this.noteTask(ragApplication, optionsNonNullableAttribute)
               default:

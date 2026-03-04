@@ -3,15 +3,18 @@ import { createPromptToolUsePlugin, webSearchPlugin } from '@cherrystudio/ai-cor
 import { loggerService } from '@logger'
 import { isGemini3Model, isSupportedThinkingTokenQwenModel } from '@renderer/config/models'
 import { getEnableDeveloperMode } from '@renderer/hooks/useSettings'
+import { getStoreSetting } from '@renderer/hooks/useSettings'
 import type { Assistant, Model, Provider } from '@renderer/types'
 import { SystemProviderIds } from '@renderer/types'
 import { isOllamaProvider, isSupportEnableThinkingProvider } from '@renderer/utils/provider'
 
 import { getAiSdkProviderId } from '../provider/factory'
+import { createAiSdkProvider } from '../provider/factory'
 import type { AiSdkMiddlewareConfig } from '../types/middlewareConfig'
 import { isOpenRouterGeminiGenerateImageModel } from '../utils/image'
 import { getReasoningTagName } from '../utils/reasoning'
 import { createAnthropicCachePlugin } from './anthropicCachePlugin'
+import { createCondenseContextPlugin } from './condenseContextPlugin'
 import { createNoThinkPlugin } from './noThinkPlugin'
 import { createOpenrouterGenerateImagePlugin } from './openrouterGenerateImagePlugin'
 import { createOpenrouterReasoningPlugin } from './openrouterReasoningPlugin'
@@ -21,9 +24,6 @@ import { searchOrchestrationPlugin } from './searchOrchestrationPlugin'
 import { createSimulateStreamingPlugin } from './simulateStreamingPlugin'
 import { createSkipGeminiThoughtSignaturePlugin } from './skipGeminiThoughtSignaturePlugin'
 import { createTelemetryPlugin } from './telemetryPlugin'
-import { createCondenseContextPlugin } from './condenseContextPlugin'
-import { getStoreSetting } from '@renderer/hooks/useSettings'
-import { createAiSdkProvider } from '../provider/factory'
 
 const logger = loggerService.withContext('PluginBuilder')
 

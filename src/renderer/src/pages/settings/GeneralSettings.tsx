@@ -10,17 +10,16 @@ import i18n from '@renderer/i18n'
 import type { RootState } from '@renderer/store'
 import { useAppDispatch } from '@renderer/store'
 import {
+  setContextCondenseThreshold,
   setEnableDataCollection,
   setEnableSpellCheck,
+  setIsContextCondensingEnabled,
   setLanguage,
   setNotificationSettings,
   setProxyBypassRules as _setProxyBypassRules,
   setProxyMode,
   setProxyUrl as _setProxyUrl,
-  setSpellCheckLanguages,
-  setIsContextCondensingEnabled,
-  setContextCondenseThreshold
-} from '@renderer/store/settings'
+  setSpellCheckLanguages} from '@renderer/store/settings'
 import type { LanguageVarious } from '@renderer/types'
 import type { NotificationSource } from '@renderer/types/notification'
 import { isValidProxyUrl } from '@renderer/utils'

@@ -2,7 +2,6 @@ import fs from 'node:fs'
 import { arch } from 'node:os'
 import path from 'node:path'
 
-import type { TokenUsageData } from '@cherrystudio/analytics-client'
 import { loggerService } from '@logger'
 import { isLinux, isMac, isPortable, isWin } from '@main/constant'
 import { generateSignature } from '@main/integration/cherryai'
@@ -21,17 +20,14 @@ import { handleZoomFactor } from '@main/utils/zoom'
 import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'
 import type { UpgradeChannel } from '@shared/config/constant'
 import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from '@shared/config/constant'
-import type { LocalTransferConnectPayload } from '@shared/config/types'
 import { IpcChannel } from '@shared/IpcChannel'
 import type {
   AgentPersistedMessage,
   FileMetadata,
   Notification,
-  OcrProvider,
   PluginError,
   Provider,
   Shortcut,
-  SupportedOcrFile,
   ThemeMode
 } from '@types'
 import checkDiskSpace from 'check-disk-space'
@@ -41,8 +37,6 @@ import fontList from 'font-list'
 
 import { agentMessageRepository } from './services/agents/database'
 import { PluginService } from './services/agents/plugins/PluginService'
-import { analyticsService } from './services/AnalyticsService'
-import { apiServerService } from './services/ApiServerService'
 import appService from './services/AppService'
 import AppUpdater from './services/AppUpdater'
 import BackupManager from './services/BackupManager'
@@ -56,17 +50,13 @@ import { externalAppsService } from './services/ExternalAppsService'
 import { fileStorage as fileManager } from './services/FileStorage'
 import FileService from './services/FileSystemService'
 import KnowledgeService from './services/KnowledgeService'
-import { lanTransferClientService } from './services/lanTransfer'
-import { localTransferService } from './services/LocalTransferService'
 import mcpService from './services/MCPService'
 import MemoryService from './services/memory/MemoryService'
 import { openTraceWindow, setTraceWindowTitle } from './services/NodeTraceService'
 import NotificationService from './services/NotificationService'
 import * as NutstoreService from './services/NutstoreService'
 import ObsidianVaultService from './services/ObsidianVaultService'
-import { ocrService } from './services/ocr/OcrService'
 import { openClawService } from './services/OpenClawService'
-import { isOvmsSupported } from './services/OvmsManager'
 import powerMonitorService from './services/PowerMonitorService'
 import { proxyManager } from './services/ProxyManager'
 import { pythonService } from './services/PythonService'
@@ -609,7 +599,6 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
   ipcMain.handle(IpcChannel.Backup_ListS3Files, backupManager.listS3Files.bind(backupManager))
   ipcMain.handle(IpcChannel.Backup_DeleteS3File, backupManager.deleteS3File.bind(backupManager))
   ipcMain.handle(IpcChannel.Backup_CheckS3Connection, backupManager.checkS3Connection.bind(backupManager))
-  ipcMain.handle(IpcChannel.Backup_CreateLanTransferBackup, backupManager.createLanTransferBackup.bind(backupManager))
   ipcMain.handle(IpcChannel.Backup_DeleteTempBackup, backupManager.deleteTempBackup.bind(backupManager))
 
   // file
@@ -977,8 +966,6 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
       return null
     }
   })
-  // API Server
-  apiServerService.registerIpcHandlers()
 
   // Anthropic OAuth
   ipcMain.handle(IpcChannel.Anthropic_StartOAuthFlow, () => anthropicService.startOAuthFlow())
@@ -1005,44 +992,6 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
   ipcMain.handle(IpcChannel.CodeTools_RemoveCustomTerminalPath, (_, terminalId: string) =>
     codeToolsService.removeCustomTerminalPath(terminalId)
   )
-
-  // OCR
-  ipcMain.handle(IpcChannel.OCR_ocr, (_, file: SupportedOcrFile, provider: OcrProvider) =>
-    ocrService.ocr(file, provider)
-  )
-  ipcMain.handle(IpcChannel.OCR_ListProviders, () => ocrService.listProviderIds())
-
-  // OVMS
-  ipcMain.handle(IpcChannel.Ovms_IsSupported, () => isOvmsSupported)
-  if (isOvmsSupported) {
-    const { ovmsManager } = await import('./services/OvmsManager')
-    if (ovmsManager) {
-      ipcMain.handle(
-        IpcChannel.Ovms_AddModel,
-        (_, modelName: string, modelId: string, modelSource: string, task: string) =>
-          ovmsManager.addModel(modelName, modelId, modelSource, task)
-      )
-      ipcMain.handle(IpcChannel.Ovms_StopAddModel, () => ovmsManager.stopAddModel())
-      ipcMain.handle(IpcChannel.Ovms_GetModels, () => ovmsManager.getModels())
-      ipcMain.handle(IpcChannel.Ovms_IsRunning, () => ovmsManager.initializeOvms())
-      ipcMain.handle(IpcChannel.Ovms_GetStatus, () => ovmsManager.getOvmsStatus())
-      ipcMain.handle(IpcChannel.Ovms_RunOVMS, () => ovmsManager.runOvms())
-      ipcMain.handle(IpcChannel.Ovms_StopOVMS, () => ovmsManager.stopOvms())
-    } else {
-      logger.error('Unexpected behavior: undefined ovmsManager, but OVMS should be supported.')
-    }
-  } else {
-    const fallback = () => {
-      throw new Error('OVMS is only supported on Windows with intel CPU.')
-    }
-    ipcMain.handle(IpcChannel.Ovms_AddModel, fallback)
-    ipcMain.handle(IpcChannel.Ovms_StopAddModel, fallback)
-    ipcMain.handle(IpcChannel.Ovms_GetModels, fallback)
-    ipcMain.handle(IpcChannel.Ovms_IsRunning, fallback)
-    ipcMain.handle(IpcChannel.Ovms_GetStatus, fallback)
-    ipcMain.handle(IpcChannel.Ovms_RunOVMS, fallback)
-    ipcMain.handle(IpcChannel.Ovms_StopOVMS, fallback)
-  }
 
   // CherryAI
   ipcMain.handle(IpcChannel.Cherryai_GetSignature, (_, params) => generateSignature(params))
@@ -1138,18 +1087,6 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
     }
   })
 
-  ipcMain.handle(IpcChannel.LocalTransfer_ListServices, () => localTransferService.getState())
-  ipcMain.handle(IpcChannel.LocalTransfer_StartScan, () => localTransferService.startDiscovery({ resetList: true }))
-  ipcMain.handle(IpcChannel.LocalTransfer_StopScan, () => localTransferService.stopDiscovery())
-  ipcMain.handle(IpcChannel.LocalTransfer_Connect, (_, payload: LocalTransferConnectPayload) =>
-    lanTransferClientService.connectAndHandshake(payload)
-  )
-  ipcMain.handle(IpcChannel.LocalTransfer_Disconnect, () => lanTransferClientService.disconnect())
-  ipcMain.handle(IpcChannel.LocalTransfer_SendFile, (_, payload: { filePath: string }) =>
-    lanTransferClientService.sendFile(payload.filePath)
-  )
-  ipcMain.handle(IpcChannel.LocalTransfer_CancelTransfer, () => lanTransferClientService.cancelTransfer())
-
   ipcMain.handle(IpcChannel.APP_CrashRenderProcess, () => {
     mainWindow.webContents.forcefullyCrashRenderer()
   })
@@ -1171,8 +1108,4 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
   ipcMain.handle(IpcChannel.OpenClaw_SyncConfig, openClawService.syncProviderConfig)
   ipcMain.handle(IpcChannel.OpenClaw_GetChannels, openClawService.getChannelStatus)
 
-  // Analytics
-  ipcMain.handle(IpcChannel.Analytics_TrackTokenUsage, (_, data: TokenUsageData) =>
-    analyticsService.trackTokenUsage(data)
-  )
 }

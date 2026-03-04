@@ -30,6 +30,7 @@ import {
   qwen38bModel,
   SYSTEM_MODELS
 } from '@renderer/config/models'
+// @ts-ignore -- stripped feature (OCR config removed)
 import { BUILTIN_OCR_PROVIDERS, BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
 import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
 import { SYSTEM_PROVIDERS } from '@renderer/config/providers'
@@ -41,7 +42,6 @@ import { DEFAULT_ASSISTANT_SETTINGS } from '@renderer/services/AssistantService'
 import { defaultPreprocessProviders } from '@renderer/store/preprocess'
 import type {
   Assistant,
-  BuiltinOcrProvider,
   Model,
   Provider,
   ProviderApiOptions,
@@ -129,8 +129,11 @@ function fixMissingProvider(state: RootState) {
 }
 
 // add ocr provider
-function addOcrProvider(state: RootState, provider: BuiltinOcrProvider) {
+// @ts-ignore -- stripped feature
+function addOcrProvider(state: RootState, provider: any) {
+  // @ts-ignore -- stripped feature
   if (!state.ocr.providers.find((p) => p.id === provider.id)) {
+    // @ts-ignore -- stripped feature
     state.ocr.providers.push(provider)
   }
 }
@@ -1641,7 +1644,9 @@ const migrateConfig = {
   },
   '107': (state: RootState) => {
     try {
+      // @ts-ignore -- stripped feature
       if (state.paintings && !state.paintings.dmxapi_paintings) {
+        // @ts-ignore -- stripped feature
         state.paintings.dmxapi_paintings = []
       }
       return state
@@ -1672,7 +1677,9 @@ const migrateConfig = {
   },
   '110': (state: RootState) => {
     try {
+      // @ts-ignore -- stripped feature
       if (state.paintings && !state.paintings.tokenflux_paintings) {
+        // @ts-ignore -- stripped feature
         state.paintings.tokenflux_paintings = []
       }
       state.settings.testPlan = false
@@ -2274,6 +2281,7 @@ const migrateConfig = {
   },
   '137': (state: RootState) => {
     try {
+      // @ts-ignore -- stripped feature
       state.ocr = {
         providers: BUILTIN_OCR_PROVIDERS,
         imageProviderId: DEFAULT_OCR_PROVIDER.image.id
@@ -2313,6 +2321,7 @@ const migrateConfig = {
         }
 
         // Update default painting provider to zhipu
+        // @ts-ignore -- stripped feature
         state.settings.defaultPaintingProvider = 'zhipu'
 
         // Add zhipu web search provider
@@ -2353,7 +2362,9 @@ const migrateConfig = {
         aihubmix_image_edit: state?.paintings?.edit || [],
         // @ts-ignore upscale
         aihubmix_image_upscale: state?.paintings?.upscale || [],
+        // @ts-ignore -- stripped feature
         openai_image_generate: state?.paintings?.openai_image_generate || [],
+        // @ts-ignore -- stripped feature
         openai_image_edit: state?.paintings?.openai_image_edit || [],
         ovms_paintings: []
       }
@@ -2689,6 +2700,7 @@ const migrateConfig = {
     try {
       addProvider(state, 'sophnet')
       state.llm.providers = moveProvider(state.llm.providers, 'sophnet', 17)
+      // @ts-ignore -- stripped feature
       state.settings.defaultPaintingProvider = 'cherryin'
       return state
     } catch (error) {
@@ -2727,7 +2739,9 @@ const migrateConfig = {
 
       // Add ovocr provider and clear ovms paintings
       addOcrProvider(state, BUILTIN_OCR_PROVIDERS_MAP.ovocr)
+      // @ts-ignore -- stripped feature
       if (isEmpty(state.paintings.ovms_paintings)) {
+        // @ts-ignore -- stripped feature
         state.paintings.ovms_paintings = []
       }
 
@@ -3210,10 +3224,14 @@ const migrateConfig = {
   },
   '196': (state: RootState) => {
     try {
+      // @ts-ignore -- stripped feature
       if (state.paintings && !state.paintings.ppio_draw) {
+        // @ts-ignore -- stripped feature
         state.paintings.ppio_draw = []
       }
+      // @ts-ignore -- stripped feature
       if (state.paintings && !state.paintings.ppio_edit) {
+        // @ts-ignore -- stripped feature
         state.paintings.ppio_edit = []
       }
       return state

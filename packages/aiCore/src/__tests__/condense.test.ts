@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
-import { createCondenseContextMiddleware } from '../core/middleware/condense'
 import type { LanguageModelV3 } from '@ai-sdk/provider'
+import { describe, expect, it, vi } from 'vitest'
+
+import { createCondenseContextMiddleware } from '../core/middleware/condense'
 
 // Mock Vercel AI SDK generateText
 vi.mock('ai', () => ({

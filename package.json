@@ -76,9 +76,7 @@
     "@anthropic-ai/claude-agent-sdk": "0.2.56",
     "@expo/sudo-prompt": "^9.3.2",
     "@libsql/client": "0.14.0",
-    "@napi-rs/system-ocr": "1.0.2",
     "@paymoapp/electron-shutdown-handler": "1.1.2",
-    "express": "5.1.0",
     "font-list": "2.0.0",
     "graceful-fs": "4.2.11",
     "gray-matter": "4.0.3",
@@ -88,9 +86,6 @@
     "os-proxy-config": "1.1.2",
     "selection-hook": "1.0.12",
     "sharp": "0.34.3",
-    "swagger-jsdoc": "6.2.8",
-    "swagger-ui-express": "5.0.1",
-    "tesseract.js": "6.0.1",
     "turndown": "7.2.0"
   },
   "devDependencies": {
@@ -122,7 +117,6 @@
     "@aws-sdk/client-s3": "^3.998.0",
     "@biomejs/biome": "2.2.4",
     "@cherrystudio/ai-core": "workspace:*",
-    "@cherrystudio/analytics-client": "^1.1.0",
     "@cherrystudio/embedjs": "0.1.31",
     "@cherrystudio/embedjs-interfaces": "0.1.31",
     "@cherrystudio/embedjs-libsql": "0.1.31",
@@ -131,9 +125,7 @@
     "@cherrystudio/embedjs-loader-markdown": "0.1.31",
     "@cherrystudio/embedjs-loader-msoffice": "0.1.31",
     "@cherrystudio/embedjs-loader-pdf": "0.1.31",
-    "@cherrystudio/embedjs-loader-sitemap": "0.1.31",
     "@cherrystudio/embedjs-loader-web": "0.1.31",
-    "@cherrystudio/embedjs-loader-xml": "0.1.31",
     "@cherrystudio/embedjs-ollama": "0.1.31",
     "@cherrystudio/embedjs-openai": "0.1.31",
     "@cherrystudio/embedjs-utils": "0.1.31",
@@ -215,9 +207,7 @@
     "@types/adm-zip": "^0.5.7",
     "@types/cli-progress": "^3",
     "@types/content-type": "^1.1.9",
-    "@types/cors": "^2.8.19",
     "@types/diff": "^7",
-    "@types/express": "^5",
     "@types/fs-extra": "^11",
     "@types/hast": "^3.0.4",
     "@types/he": "^1",
@@ -235,8 +225,6 @@
     "@types/react-transition-group": "^4.4.12",
     "@types/react-window": "^1",
     "@types/semver": "^7.7.1",
-    "@types/swagger-jsdoc": "^6",
-    "@types/swagger-ui-express": "^4.1.8",
     "@types/tinycolor2": "^1",
     "@types/turndown": "^5.0.5",
     "@types/unist": "3.0.3",
@@ -260,7 +248,6 @@
     "archiver": "^7.0.1",
     "async-mutex": "^0.5.0",
     "axios": "^1.7.3",
-    "bonjour-service": "1.3.0",
     "browser-image-compression": "^2.0.2",
     "builder-util-runtime": "9.5.0",
     "chalk": "4.1.2",
@@ -275,7 +262,6 @@
     "color": "^5.0.0",
     "commander": "^14.0.2",
     "concurrently": "^9.2.1",
-    "cors": "2.8.5",
     "country-flag-emoji-polyfill": "0.1.8",
     "dayjs": "^1.11.11",
     "dexie": "^4.0.8",
@@ -305,7 +291,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "express-validator": "^7.2.1",
     "fast-diff": "^1.3.0",
     "fast-xml-parser": "5.4.1",
     "fetch-socks": "1.3.2",
@@ -450,8 +435,6 @@
       "@langchain/core": "1.0.2"
     },
     "patchedDependencies": {
-      "@napi-rs/system-ocr@1.0.2": "patches/@napi-rs-system-ocr-npm-1.0.2-59e7a78e8b.patch",
-      "tesseract.js@6.0.1": "patches/tesseract.js-npm-6.0.1-2562a7e46d.patch",
       "@anthropic-ai/vertex-sdk@0.11.4": "patches/@anthropic-ai-vertex-sdk-npm-0.11.4-c19cb41edb.patch",
       "@google/genai@1.0.1": "patches/@google-genai-npm-1.0.1-e26f0f9af7.patch",
       "@langchain/core@1.0.2": "patches/@langchain-core-npm-1.0.2-183ef83fe4.patch",
@@ -482,7 +465,6 @@
       "registry-js",
       "selection-hook",
       "sharp",
-      "tesseract.js",
       "zipfile"
     ]
   },
@@ -509,10 +491,6 @@
     "@libsql/linux-x64-gnu": "0.4.7",
     "@libsql/linux-x64-musl": "0.4.7",
     "@libsql/win32-x64-msvc": "0.4.7",
-    "@napi-rs/system-ocr-darwin-arm64": "1.0.2",
-    "@napi-rs/system-ocr-darwin-x64": "1.0.2",
-    "@napi-rs/system-ocr-win32-arm64-msvc": "1.0.2",
-    "@napi-rs/system-ocr-win32-x64-msvc": "1.0.2",
     "@strongtz/win32-arm64-msvc": "0.4.7"
   }
 }

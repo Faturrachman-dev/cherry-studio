@@ -1,7 +1,7 @@
 import { ActionIconButton } from '@renderer/components/Buttons'
 import { QuickPanelReservedSymbol } from '@renderer/components/QuickPanel'
 import { defineTool, registerTool, TopicType } from '@renderer/pages/home/Inputbar/types'
-import { EventEmitter, EVENT_NAMES } from '@renderer/services/EventService'
+import { EVENT_NAMES,EventEmitter } from '@renderer/services/EventService'
 import { Tooltip } from 'antd'
 import { Shrink } from 'lucide-react'
 
@@ -32,7 +32,7 @@ const condenseMessagesTool = defineTool({
     },
     triggers: [
       {
-        symbol: QuickPanelReservedSymbol.Slash,
+        symbol: QuickPanelReservedSymbol.SlashCommands,
         createHandler: () => {
           return () => {
             EventEmitter.emit(EVENT_NAMES.CONDENSE_MESSAGES)

@@ -15,14 +15,13 @@ import { isDev, isLinux, isWin } from './constant'
 import process from 'node:process'
 
 import { registerIpc } from './ipc'
-import { agentService } from './services/agents'
-import { analyticsService } from './services/AnalyticsService'
-import { apiServerService } from './services/ApiServerService'
+
+
 import { appMenuService } from './services/AppMenuService'
 import { configManager } from './services/ConfigManager'
-import { lanTransferClientService } from './services/lanTransfer'
+
 import mcpService from './services/MCPService'
-import { localTransferService } from './services/LocalTransferService'
+
 import { openClawService } from './services/OpenClawService'
 import { nodeTraceService } from './services/NodeTraceService'
 import powerMonitorService from './services/PowerMonitorService'
@@ -38,8 +37,8 @@ import { TrayService } from './services/TrayService'
 import { versionService } from './services/VersionService'
 import { windowService } from './services/WindowService'
 import { initWebviewHotkeys } from './services/WebviewService'
-import { runAsyncFunction } from './utils'
-import { isOvmsSupported } from './services/OvmsManager'
+
+
 
 const logger = loggerService.withContext('MainEntry')
 
@@ -157,7 +156,6 @@ if (!app.requestSingleInstanceLock()) {
 
     nodeTraceService.init()
     powerMonitorService.init()
-    analyticsService.init()
 
     app.on('activate', function () {
       const mainWindow = windowService.getMainWindow()
@@ -171,7 +169,6 @@ if (!app.requestSingleInstanceLock()) {
     registerShortcuts(mainWindow)
 
     await registerIpc(mainWindow, app)
-    localTransferService.startDiscovery({ resetList: true })
 
     replaceDevtoolsFont(mainWindow)
 
@@ -186,34 +183,6 @@ if (!app.requestSingleInstanceLock()) {
 
     //start selection assistant service
     initSelectionService()
-
-    runAsyncFunction(async () => {
-      // Start API server if enabled or if agents exist
-      try {
-        const config = await apiServerService.getCurrentConfig()
-        logger.info('API server config:', config)
-
-        // Check if there are any agents
-        let shouldStart = config.enabled
-        if (!shouldStart) {
-          try {
-            const { total } = await agentService.listAgents({ limit: 1 })
-            if (total > 0) {
-              shouldStart = true
-              logger.info(`Detected ${total} agent(s), auto-starting API server`)
-            }
-          } catch (error: any) {
-            logger.warn('Failed to check agent count:', error)
-          }
-        }
-
-        if (shouldStart) {
-          await apiServerService.start()
-        }
-      } catch (error: any) {
-        logger.error('Failed to check/start API server:', error)
-      }
-    })
   })
 
   registerProtocolClient(app)
@@ -253,27 +222,14 @@ if (!app.requestSingleInstanceLock()) {
     if (selectionService) {
       selectionService.quit()
     }
-
-    lanTransferClientService.dispose()
-    localTransferService.dispose()
   })
 
   app.on('will-quit', async () => {
     // 简单的资源清理，不阻塞退出流程
-    if (isOvmsSupported) {
-      const { ovmsManager } = await import('./services/OvmsManager')
-      if (ovmsManager) {
-        await ovmsManager.stopOvms()
-      } else {
-        logger.warn('Unexpected behavior: undefined ovmsManager, but OVMS should be supported.')
-      }
-    }
 
     try {
-      await analyticsService.destroy()
       await openClawService.stopGateway()
       await mcpService.cleanup()
-      await apiServerService.stop()
     } catch (error) {
       logger.warn('Error cleaning up services:', error as Error)
     }

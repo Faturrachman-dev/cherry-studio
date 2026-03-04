@@ -58,9 +58,8 @@ export {
   TemplateLoadError
 } from './core/errors'
 export {
-  createCondenseContextMiddleware,
-  type CondenseContextOptions
-} from './core/middleware'
+  type CondenseContextOptions,
+  createCondenseContextMiddleware} from './core/middleware'
 // ==================== 包信息 ====================
 export const AI_CORE_VERSION = '1.0.0'
 export const AI_CORE_NAME = '@cherrystudio/ai-core'

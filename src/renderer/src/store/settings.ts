@@ -27,7 +27,6 @@ import type {
   MathEngine,
   MinAppRegionFilter,
   OpenAIServiceTier,
-  PaintingProvider,
   S3Config,
   SidebarIcon,
   TranslateLanguageCode
@@ -239,18 +238,17 @@ export interface SettingsState {
   localBackupSyncInterval: number
   localBackupMaxBackups: number
   localBackupSkipBackupFile: boolean
-  defaultPaintingProvider: PaintingProvider
   s3: S3Config
   // Developer mode
   enableDeveloperMode: boolean
   // UI
   navbarPosition: 'left' | 'top'
-  // API Server
-  apiServer: ApiServerConfig
   showMessageOutline: boolean
   // Context Condensing
   isContextCondensingEnabled: boolean
   contextCondenseThreshold: number
+  /** @deprecated API Server stripped — retained for agent code compatibility */
+  apiServer: ApiServerConfig
 }
 
 export type MultiModelMessageStyle = 'horizontal' | 'vertical' | 'fold' | 'grid'
@@ -427,7 +425,6 @@ export const initialState: SettingsState = {
   localBackupSyncInterval: 0,
   localBackupMaxBackups: 0,
   localBackupSkipBackupFile: false,
-  defaultPaintingProvider: 'cherryin',
   s3: {
     endpoint: '',
     region: '',
@@ -446,15 +443,15 @@ export const initialState: SettingsState = {
   // Context Condensing
   isContextCondensingEnabled: false,
   contextCondenseThreshold: 10,
-  // UI
-  navbarPosition: 'top',
-  // API Server
+  // API Server (stripped — permanently disabled)
   apiServer: {
     enabled: false,
     host: API_SERVER_DEFAULTS.HOST,
     port: API_SERVER_DEFAULTS.PORT,
-    apiKey: `cs-sk-${uuid()}`
+    apiKey: ''
   },
+  // UI
+  navbarPosition: 'top',
   showMessageOutline: false
 }
 
@@ -869,9 +866,6 @@ const settingsSlice = createSlice({
     setLocalBackupSkipBackupFile: (state, action: PayloadAction<boolean>) => {
       state.localBackupSkipBackupFile = action.payload
     },
-    setDefaultPaintingProvider: (state, action: PayloadAction<PaintingProvider>) => {
-      state.defaultPaintingProvider = action.payload
-    },
     setS3: (state, action: PayloadAction<S3Config>) => {
       state.s3 = action.payload
     },
@@ -883,25 +877,6 @@ const settingsSlice = createSlice({
     },
     setNavbarPosition: (state, action: PayloadAction<'left' | 'top'>) => {
       state.navbarPosition = action.payload
-    },
-    // API Server actions
-    setApiServerEnabled: (state, action: PayloadAction<boolean>) => {
-      state.apiServer = {
-        ...state.apiServer,
-        enabled: action.payload
-      }
-    },
-    setApiServerPort: (state, action: PayloadAction<number>) => {
-      state.apiServer = {
-        ...state.apiServer,
-        port: action.payload
-      }
-    },
-    setApiServerApiKey: (state, action: PayloadAction<string>) => {
-      state.apiServer = {
-        ...state.apiServer,
-        apiKey: action.payload
-      }
     },
     setShowMessageOutline: (state, action: PayloadAction<boolean>) => {
       state.showMessageOutline = action.payload
@@ -1037,16 +1012,11 @@ export const {
   setLocalBackupSyncInterval,
   setLocalBackupMaxBackups,
   setLocalBackupSkipBackupFile,
-  setDefaultPaintingProvider,
   setS3,
   setS3Partial,
   setEnableDeveloperMode,
   setNavbarPosition,
   setShowMessageOutline,
-  // API Server actions
-  setApiServerEnabled,
-  setApiServerPort,
-  setApiServerApiKey,
   // Context Condensing
   setIsContextCondensingEnabled,
   setContextCondenseThreshold

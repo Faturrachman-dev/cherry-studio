@@ -33,13 +33,8 @@ const logger = loggerService.withContext('ProviderList')
 const BUTTON_WRAPPER_HEIGHT = 50
 
 const getIsOvmsSupported = async (): Promise<boolean> => {
-  try {
-    const result = await window.api.ovms.isSupported()
-    return result
-  } catch (e) {
-    logger.warn('Fetching isOvmsSupported failed. Fallback to false.', e as Error)
-    return false
-  }
+  // OVMS stripped from Bob's fork
+  return false
 }
 
 const ProviderList: FC = () => {

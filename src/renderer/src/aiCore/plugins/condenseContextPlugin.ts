@@ -1,6 +1,6 @@
+import type { LanguageModelV3 } from '@ai-sdk/provider'
 import { definePlugin } from '@cherrystudio/ai-core'
 import { loggerService } from '@logger'
-import type { LanguageModelV3 } from '@ai-sdk/provider'
 import type { LanguageModelMiddleware } from 'ai'
 import { generateText } from 'ai'
 

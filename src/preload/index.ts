@@ -1,5 +1,4 @@
 import type { PermissionUpdate } from '@anthropic-ai/claude-agent-sdk'
-import type { TokenUsageData } from '@cherrystudio/analytics-client'
 import { electronAPI } from '@electron-toolkit/preload'
 import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'
 import type { SpanContext } from '@opentelemetry/api'
@@ -7,11 +6,6 @@ import type { GitBashPathInfo, TerminalConfig, UpgradeChannel } from '@shared/co
 import type { LogLevel, LogSourceWithContext } from '@shared/config/logger'
 import type {
   FileChangeEvent,
-  LanClientEvent,
-  LanFileCompleteMessage,
-  LanHandshakeAckMessage,
-  LocalTransferConnectPayload,
-  LocalTransferState,
   NodeCheckResult,
   WebviewKeyEvent
 } from '@shared/config/types'
@@ -25,7 +19,6 @@ import type {
   FileListResponse,
   FileMetadata,
   FileUploadResponse,
-  GetApiServerStatusResult,
   KnowledgeBaseParams,
   KnowledgeItem,
   KnowledgeSearchResult,
@@ -34,15 +27,9 @@ import type {
   MemoryListOptions,
   MemorySearchOptions,
   Model,
-  OcrProvider,
-  OcrResult,
   Provider,
-  RestartApiServerStatusResult,
   S3Config,
   Shortcut,
-  StartApiServerStatusResult,
-  StopApiServerStatusResult,
-  SupportedOcrFile,
   ThemeMode,
   WebDavConfig
 } from '@types'
@@ -208,8 +195,6 @@ const api = {
     deleteS3File: (fileName: string, s3Config: S3Config) =>
       ipcRenderer.invoke(IpcChannel.Backup_DeleteS3File, fileName, s3Config),
     checkS3Connection: (s3Config: S3Config) => ipcRenderer.invoke(IpcChannel.Backup_CheckS3Connection, s3Config),
-    createLanTransferBackup: (data: string): Promise<string> =>
-      ipcRenderer.invoke(IpcChannel.Backup_CreateLanTransferBackup, data),
     deleteTempBackup: (filePath: string): Promise<boolean> =>
       ipcRenderer.invoke(IpcChannel.Backup_DeleteTempBackup, filePath)
   },
@@ -365,17 +350,6 @@ const api = {
       ipcRenderer.invoke(IpcChannel.VertexAI_GetAccessToken, params),
     clearAuthCache: (projectId: string, clientEmail?: string) =>
       ipcRenderer.invoke(IpcChannel.VertexAI_ClearAuthCache, projectId, clientEmail)
-  },
-  ovms: {
-    isSupported: (): Promise<boolean> => ipcRenderer.invoke(IpcChannel.Ovms_IsSupported),
-    addModel: (modelName: string, modelId: string, modelSource: string, task: string) =>
-      ipcRenderer.invoke(IpcChannel.Ovms_AddModel, modelName, modelId, modelSource, task),
-    stopAddModel: () => ipcRenderer.invoke(IpcChannel.Ovms_StopAddModel),
-    getModels: () => ipcRenderer.invoke(IpcChannel.Ovms_GetModels),
-    isRunning: () => ipcRenderer.invoke(IpcChannel.Ovms_IsRunning),
-    getStatus: () => ipcRenderer.invoke(IpcChannel.Ovms_GetStatus),
-    runOvms: () => ipcRenderer.invoke(IpcChannel.Ovms_RunOVMS),
-    stopOvms: () => ipcRenderer.invoke(IpcChannel.Ovms_StopOVMS)
   },
   config: {
     set: (key: string, value: any, isNotify: boolean = false) =>
@@ -590,11 +564,6 @@ const api = {
     removeCustomTerminalPath: (terminalId: string): Promise<void> =>
       ipcRenderer.invoke(IpcChannel.CodeTools_RemoveCustomTerminalPath, terminalId)
   },
-  ocr: {
-    ocr: (file: SupportedOcrFile, provider: OcrProvider): Promise<OcrResult> =>
-      ipcRenderer.invoke(IpcChannel.OCR_ocr, file, provider),
-    listProviders: (): Promise<string[]> => ipcRenderer.invoke(IpcChannel.OCR_ListProviders)
-  },
   cherryai: {
     generateSignature: (params: { method: string; path: string; query: string; body: Record<string, any> }) =>
       ipcRenderer.invoke(IpcChannel.Cherryai_GetSignature, params)
@@ -614,21 +583,6 @@ const api = {
       }
     }
   },
-  apiServer: {
-    getStatus: (): Promise<GetApiServerStatusResult> => ipcRenderer.invoke(IpcChannel.ApiServer_GetStatus),
-    start: (): Promise<StartApiServerStatusResult> => ipcRenderer.invoke(IpcChannel.ApiServer_Start),
-    restart: (): Promise<RestartApiServerStatusResult> => ipcRenderer.invoke(IpcChannel.ApiServer_Restart),
-    stop: (): Promise<StopApiServerStatusResult> => ipcRenderer.invoke(IpcChannel.ApiServer_Stop),
-    onReady: (callback: () => void): (() => void) => {
-      const listener = () => {
-        callback()
-      }
-      ipcRenderer.on(IpcChannel.ApiServer_Ready, listener)
-      return () => {
-        ipcRenderer.removeListener(IpcChannel.ApiServer_Ready, listener)
-      }
-    }
-  },
   claudeCodePlugin: {
     install: (options: InstallPluginOptions): Promise<PluginResult<PluginMetadata>> =>
       ipcRenderer.invoke(IpcChannel.ClaudeCodePlugin_Install, options),
@@ -644,33 +598,6 @@ const api = {
       ipcRenderer.invoke(IpcChannel.ClaudeCodePlugin_InstallFromZip, options),
     installFromDirectory: (options: InstallFromDirectoryOptions): Promise<PluginResult<InstallFromSourceResult>> =>
       ipcRenderer.invoke(IpcChannel.ClaudeCodePlugin_InstallFromDirectory, options)
-  },
-  localTransfer: {
-    getState: (): Promise<LocalTransferState> => ipcRenderer.invoke(IpcChannel.LocalTransfer_ListServices),
-    startScan: (): Promise<LocalTransferState> => ipcRenderer.invoke(IpcChannel.LocalTransfer_StartScan),
-    stopScan: (): Promise<LocalTransferState> => ipcRenderer.invoke(IpcChannel.LocalTransfer_StopScan),
-    connect: (payload: LocalTransferConnectPayload): Promise<LanHandshakeAckMessage> =>
-      ipcRenderer.invoke(IpcChannel.LocalTransfer_Connect, payload),
-    disconnect: (): Promise<void> => ipcRenderer.invoke(IpcChannel.LocalTransfer_Disconnect),
-    onServicesUpdated: (callback: (state: LocalTransferState) => void): (() => void) => {
-      const channel = IpcChannel.LocalTransfer_ServicesUpdated
-      const listener = (_: Electron.IpcRendererEvent, state: LocalTransferState) => callback(state)
-      ipcRenderer.on(channel, listener)
-      return () => {
-        ipcRenderer.removeListener(channel, listener)
-      }
-    },
-    onClientEvent: (callback: (event: LanClientEvent) => void): (() => void) => {
-      const channel = IpcChannel.LocalTransfer_ClientEvent
-      const listener = (_: Electron.IpcRendererEvent, event: LanClientEvent) => callback(event)
-      ipcRenderer.on(channel, listener)
-      return () => {
-        ipcRenderer.removeListener(channel, listener)
-      }
-    },
-    sendFile: (filePath: string): Promise<LanFileCompleteMessage> =>
-      ipcRenderer.invoke(IpcChannel.LocalTransfer_SendFile, { filePath }),
-    cancelTransfer: (): Promise<void> => ipcRenderer.invoke(IpcChannel.LocalTransfer_CancelTransfer)
   },
   openclaw: {
     checkInstalled: (): Promise<{ installed: boolean; path: string | null }> =>
@@ -696,9 +623,7 @@ const api = {
       ipcRenderer.invoke(IpcChannel.OpenClaw_SyncConfig, provider, primaryModel),
     getChannels: (): Promise<OpenClawChannelInfo[]> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetChannels)
   },
-  analytics: {
-    trackTokenUsage: (data: TokenUsageData) => ipcRenderer.invoke(IpcChannel.Analytics_TrackTokenUsage, data)
-  }
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

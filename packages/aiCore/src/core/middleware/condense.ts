@@ -1,4 +1,4 @@
-import type { LanguageModelV3Middleware, LanguageModelV3 } from '@ai-sdk/provider'
+import type { LanguageModelV3,LanguageModelV3Middleware } from '@ai-sdk/provider'
 import { generateText } from 'ai'
 
 export interface CondenseContextOptions {
