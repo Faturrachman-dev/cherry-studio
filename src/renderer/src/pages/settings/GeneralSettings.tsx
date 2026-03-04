@@ -19,7 +19,8 @@ import {
   setProxyBypassRules as _setProxyBypassRules,
   setProxyMode,
   setProxyUrl as _setProxyUrl,
-  setSpellCheckLanguages} from '@renderer/store/settings'
+  setSpellCheckLanguages
+} from '@renderer/store/settings'
 import type { LanguageVarious } from '@renderer/types'
 import type { NotificationSource } from '@renderer/types/notification'
 import { isValidProxyUrl } from '@renderer/utils'
@@ -304,9 +305,9 @@ const GeneralSettings: FC = () => {
           <SettingRowTitle>Intelligent Context Condensing</SettingRowTitle>
           <Flex gap={8} align="center">
             {isContextCondensingEnabled && (
-              <Input 
-                type="number" 
-                min={5} 
+              <Input
+                type="number"
+                min={5}
                 max={100}
                 value={contextCondenseThreshold}
                 onChange={(e) => handleContextCondenseThresholdChange(e.target.value)}

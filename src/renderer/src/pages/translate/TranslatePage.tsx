@@ -20,12 +20,7 @@ import { useAppDispatch, useAppSelector } from '@renderer/store'
 import { setTranslateAbortKey, setTranslating as setTranslatingAction } from '@renderer/store/runtime'
 import { setTranslatedContent as setTranslatedContentAction, setTranslateInput } from '@renderer/store/translate'
 import type { FileMetadata } from '@renderer/types'
-import {
-  type AutoDetectionMethod,
-  type Model,
-  type TranslateHistory,
-  type TranslateLanguage
-} from '@renderer/types'
+import { type AutoDetectionMethod, type Model, type TranslateHistory, type TranslateLanguage } from '@renderer/types'
 import { getFileExtension, isTextFile, runAsyncFunction, uuid } from '@renderer/utils'
 import { abortCompletion } from '@renderer/utils/abortController'
 import { formatErrorMessageWithPrefix, isAbortError } from '@renderer/utils/error'

@@ -176,9 +176,7 @@ const Messages: React.FC<MessagesProps> = ({ assistant, topic, setActiveTopic, o
               dispatch(newMessagesActions.addMessage({ topicId: topic.id, message: summaryMessage }))
               await saveMessageAndBlocksToDB(topic.id, summaryMessage, [])
 
-              window.toast.success(
-                t('chat.input.condense.success', 'Context summary marker inserted successfully')
-              )
+              window.toast.success(t('chat.input.condense.success', 'Context summary marker inserted successfully'))
               scrollToBottom()
             } catch (error) {
               logger.error('Failed to condense messages:', error as Error)

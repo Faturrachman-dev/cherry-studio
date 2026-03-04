@@ -26,7 +26,9 @@ function createCondenseContextMiddleware(options: CondenseContextPluginOptions):
 
   const condensePrompt = async (prompt: any[]): Promise<any[]> => {
     if (prompt.length <= maxMessagesThreshold) {
-      logger.debug(`Prompt has ${prompt.length} messages, below threshold of ${maxMessagesThreshold}. Skipping condensation.`)
+      logger.debug(
+        `Prompt has ${prompt.length} messages, below threshold of ${maxMessagesThreshold}. Skipping condensation.`
+      )
       return prompt
     }
 

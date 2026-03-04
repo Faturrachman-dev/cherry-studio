@@ -16,7 +16,6 @@ import process from 'node:process'
 
 import { registerIpc } from './ipc'
 
-
 import { appMenuService } from './services/AppMenuService'
 import { configManager } from './services/ConfigManager'
 
@@ -37,8 +36,6 @@ import { TrayService } from './services/TrayService'
 import { versionService } from './services/VersionService'
 import { windowService } from './services/WindowService'
 import { initWebviewHotkeys } from './services/WebviewService'
-
-
 
 const logger = loggerService.withContext('MainEntry')
 

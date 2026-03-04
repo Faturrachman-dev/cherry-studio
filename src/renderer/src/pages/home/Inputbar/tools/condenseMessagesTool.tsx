@@ -1,7 +1,7 @@
 import { ActionIconButton } from '@renderer/components/Buttons'
 import { QuickPanelReservedSymbol } from '@renderer/components/QuickPanel'
 import { defineTool, registerTool, TopicType } from '@renderer/pages/home/Inputbar/types'
-import { EVENT_NAMES,EventEmitter } from '@renderer/services/EventService'
+import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import { Tooltip } from 'antd'
 import { Shrink } from 'lucide-react'
 
@@ -46,11 +46,7 @@ const condenseMessagesTool = defineTool({
     const { t } = context
 
     return (
-      <Tooltip
-        placement="top"
-        title={t('chat.input.condense.label', 'Condense Context')}
-        mouseLeaveDelay={0}
-        arrow>
+      <Tooltip placement="top" title={t('chat.input.condense.label', 'Condense Context')} mouseLeaveDelay={0} arrow>
         <ActionIconButton
           onClick={() => {
             EventEmitter.emit(EVENT_NAMES.CONDENSE_MESSAGES)

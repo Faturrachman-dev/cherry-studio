@@ -1,4 +1,4 @@
-import type { LanguageModelV3,LanguageModelV3Middleware } from '@ai-sdk/provider'
+import type { LanguageModelV3, LanguageModelV3Middleware } from '@ai-sdk/provider'
 import { generateText } from 'ai'
 
 export interface CondenseContextOptions {
@@ -10,9 +10,7 @@ export interface CondenseContextOptions {
   preserveRecentCount?: number
 }
 
-export function createCondenseContextMiddleware(
-  options: CondenseContextOptions
-): LanguageModelV3Middleware {
+export function createCondenseContextMiddleware(options: CondenseContextOptions): LanguageModelV3Middleware {
   const threshold = options.maxMessagesThreshold || 10
   const preserveCount = options.preserveRecentCount || 4
 

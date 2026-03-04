@@ -4,11 +4,7 @@ import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'
 import type { SpanContext } from '@opentelemetry/api'
 import type { GitBashPathInfo, TerminalConfig, UpgradeChannel } from '@shared/config/constant'
 import type { LogLevel, LogSourceWithContext } from '@shared/config/logger'
-import type {
-  FileChangeEvent,
-  NodeCheckResult,
-  WebviewKeyEvent
-} from '@shared/config/types'
+import type { FileChangeEvent, NodeCheckResult, WebviewKeyEvent } from '@shared/config/types'
 import type { MCPServerLogEntry } from '@shared/config/types'
 import type { ExternalAppInfo } from '@shared/externalApp/types'
 import { IpcChannel } from '@shared/IpcChannel'
@@ -622,8 +618,7 @@ const api = {
     syncConfig: (provider: Provider, primaryModel: Model): Promise<{ success: boolean; message: string }> =>
       ipcRenderer.invoke(IpcChannel.OpenClaw_SyncConfig, provider, primaryModel),
     getChannels: (): Promise<OpenClawChannelInfo[]> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetChannels)
-  },
-
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

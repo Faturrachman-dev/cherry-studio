@@ -142,7 +142,7 @@ export function buildPlugins({ provider, model, config, localProvider }: BuildPl
     const contextCondenseThreshold = getStoreSetting('contextCondenseThreshold')
     // Use the pre-created provider to get a language model for summarization
     const summaryModel = localProvider.languageModel(model.id) as LanguageModelV3
-    
+
     plugins.push(
       createCondenseContextPlugin({
         summaryModel,

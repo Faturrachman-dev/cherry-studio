@@ -23,7 +23,11 @@ describe('createCondenseContextMiddleware', () => {
     }
 
     // V3 middleware uses transformParams
-    const result = await mw.transformParams!({ params: params as any, type: 'generate' as any, model: dummyModel as any })
+    const result = await mw.transformParams!({
+      params: params as any,
+      type: 'generate' as any,
+      model: dummyModel as any
+    })
 
     expect(result.prompt).toEqual([{ role: 'user', content: 'hello' }])
   })
@@ -40,7 +44,11 @@ describe('createCondenseContextMiddleware', () => {
       content: `Message ${i}`
     }))
 
-    const result = await mw.transformParams!({ params: { prompt } as any, type: 'generate' as any, model: dummyModel as any })
+    const result = await mw.transformParams!({
+      params: { prompt } as any,
+      type: 'generate' as any,
+      model: dummyModel as any
+    })
 
     // Should have: 1 system summary + 2 recent messages = 3 total
     expect(result.prompt).toHaveLength(3)
@@ -65,7 +73,11 @@ describe('createCondenseContextMiddleware', () => {
       }))
     ]
 
-    const result = await mw.transformParams!({ params: { prompt } as any, type: 'generate' as any, model: dummyModel as any })
+    const result = await mw.transformParams!({
+      params: { prompt } as any,
+      type: 'generate' as any,
+      model: dummyModel as any
+    })
 
     // Should have: 1 original system + 1 summary system + 2 recent = 4
     expect(result.prompt).toHaveLength(4)
@@ -89,7 +101,11 @@ describe('createCondenseContextMiddleware', () => {
       { role: 'user', content: 'Bye' }
     ]
 
-    const result = await mw.transformParams!({ params: { prompt } as any, type: 'generate' as any, model: dummyModel as any })
+    const result = await mw.transformParams!({
+      params: { prompt } as any,
+      type: 'generate' as any,
+      model: dummyModel as any
+    })
 
     // All 4 messages should pass through since non-system count (3) <= preserveRecentCount (4)
     expect(result.prompt).toHaveLength(4)

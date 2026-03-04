@@ -29,9 +29,7 @@ export async function getAvailableProviders(): Promise<Provider[]> {
     const providers = await reduxService.select('state.llm.providers')
     if (!providers || !Array.isArray(providers)) return []
 
-    const supported = providers.filter(
-      (p: Provider) => p.enabled && (p.type === 'openai' || p.type === 'anthropic')
-    )
+    const supported = providers.filter((p: Provider) => p.enabled && (p.type === 'openai' || p.type === 'anthropic'))
     CacheService.set(PROVIDERS_CACHE_KEY, supported, PROVIDERS_CACHE_TTL)
     return supported
   } catch (error) {
@@ -59,27 +57,61 @@ export async function validateModelId(model: string): Promise<{
 }> {
   try {
     if (!model || typeof model !== 'string') {
-      return { valid: false, error: { type: 'invalid_format', message: 'Model must be a non-empty string', code: 'invalid_model_parameter' } }
+      return {
+        valid: false,
+        error: { type: 'invalid_format', message: 'Model must be a non-empty string', code: 'invalid_model_parameter' }
+      }
     }
     if (!model.includes(':')) {
-      return { valid: false, error: { type: 'invalid_format', message: "Invalid model format. Expected: 'provider:model_id'", code: 'invalid_model_format' } }
+      return {
+        valid: false,
+        error: {
+          type: 'invalid_format',
+          message: "Invalid model format. Expected: 'provider:model_id'",
+          code: 'invalid_model_format'
+        }
+      }
     }
     const parts = model.split(':')
     if (parts.length < 2 || !parts[0] || !parts[1]) {
-      return { valid: false, error: { type: 'invalid_format', message: "Both provider and model_id must be non-empty", code: 'invalid_model_format' } }
+      return {
+        valid: false,
+        error: {
+          type: 'invalid_format',
+          message: 'Both provider and model_id must be non-empty',
+          code: 'invalid_model_format'
+        }
+      }
     }
     const modelId = getRealProviderModel(model)
     const provider = await getProviderByModel(model)
     if (!provider) {
-      return { valid: false, error: { type: 'provider_not_found', message: `Provider '${parts[0]}' not found or not supported`, code: 'provider_not_found' } }
+      return {
+        valid: false,
+        error: {
+          type: 'provider_not_found',
+          message: `Provider '${parts[0]}' not found or not supported`,
+          code: 'provider_not_found'
+        }
+      }
     }
     const modelExists = provider.models?.some((m: Model) => m.id === modelId)
     if (!modelExists) {
-      return { valid: false, error: { type: 'model_not_available', message: `Model '${modelId}' not available in provider '${parts[0]}'`, code: 'model_not_available' } }
+      return {
+        valid: false,
+        error: {
+          type: 'model_not_available',
+          message: `Model '${modelId}' not available in provider '${parts[0]}'`,
+          code: 'model_not_available'
+        }
+      }
     }
     return { valid: true, provider, modelId }
   } catch (error) {
     logger.error('Error validating model ID', { error, model })
-    return { valid: false, error: { type: 'invalid_format', message: 'Failed to validate model ID', code: 'validation_error' } }
+    return {
+      valid: false,
+      error: { type: 'invalid_format', message: 'Failed to validate model ID', code: 'validation_error' }
+    }
   }
 }
