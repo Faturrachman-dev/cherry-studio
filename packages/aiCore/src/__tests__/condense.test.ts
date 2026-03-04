@@ -45,7 +45,7 @@ describe('createCondenseContextMiddleware', () => {
     // Should have: 1 system summary + 2 recent messages = 3 total
     expect(result.prompt).toHaveLength(3)
     expect(result.prompt[0].role).toBe('system')
-    expect(result.prompt[0].content[0].text).toContain('This is a summary')
+    expect((result.prompt[0].content[0] as { text: string }).text).toContain('This is a summary')
     expect(result.prompt[1].content).toBe('Message 4')
     expect(result.prompt[2].content).toBe('Message 5')
   })
@@ -72,7 +72,7 @@ describe('createCondenseContextMiddleware', () => {
     expect(result.prompt[0].role).toBe('system')
     expect(result.prompt[0].content).toBe('You are a helpful assistant.')
     expect(result.prompt[1].role).toBe('system')
-    expect(result.prompt[1].content[0].text).toContain('Conversation Summary')
+    expect((result.prompt[1].content[0] as { text: string }).text).toContain('Conversation Summary')
   })
 
   it('passes through when non-system messages are fewer than preserveRecentCount', async () => {

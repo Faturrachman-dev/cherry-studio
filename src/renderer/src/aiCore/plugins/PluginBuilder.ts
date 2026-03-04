@@ -1,3 +1,4 @@
+import type { LanguageModelV3 } from '@ai-sdk/provider'
 import type { AiPlugin } from '@cherrystudio/ai-core'
 import { createPromptToolUsePlugin, webSearchPlugin } from '@cherrystudio/ai-core/built-in/plugins'
 import { loggerService } from '@logger'
@@ -9,7 +10,6 @@ import { SystemProviderIds } from '@renderer/types'
 import { isOllamaProvider, isSupportEnableThinkingProvider } from '@renderer/utils/provider'
 
 import { getAiSdkProviderId } from '../provider/factory'
-import { createAiSdkProvider } from '../provider/factory'
 import type { AiSdkMiddlewareConfig } from '../types/middlewareConfig'
 import { isOpenRouterGeminiGenerateImageModel } from '../utils/image'
 import { getReasoningTagName } from '../utils/reasoning'
@@ -37,12 +37,14 @@ export interface BuildPluginsContext {
   provider: Provider
   model: Model
   config: AiSdkMiddlewareConfig & { assistant: Assistant; topicId?: string }
+  /** Pre-created AI SDK provider instance for creating language models */
+  localProvider: import('ai').Provider
 }
 
 /**
  * 根据条件构建插件数组
  */
-export function buildPlugins({ provider, model, config }: BuildPluginsContext): AiPlugin[] {
+export function buildPlugins({ provider, model, config, localProvider }: BuildPluginsContext): AiPlugin[] {
   const plugins: AiPlugin<any, any>[] = []
 
   if (config.topicId && getEnableDeveloperMode()) {
@@ -138,9 +140,8 @@ export function buildPlugins({ provider, model, config }: BuildPluginsContext): 
   const isContextCondensingEnabled = getStoreSetting('isContextCondensingEnabled')
   if (isContextCondensingEnabled) {
     const contextCondenseThreshold = getStoreSetting('contextCondenseThreshold')
-    // Get default model for summarization, or fallback to current model
-    const aiSdkId = getAiSdkProviderId(provider)
-    const summaryModel = createAiSdkProvider(aiSdkId)(model.id)
+    // Use the pre-created provider to get a language model for summarization
+    const summaryModel = localProvider.languageModel(model.id) as LanguageModelV3
     
     plugins.push(
       createCondenseContextPlugin({

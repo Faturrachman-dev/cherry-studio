@@ -67,7 +67,7 @@ function createCondenseContextMiddleware(options: CondenseContextPluginOptions):
 
       return [...systemMessages, condensedMessage, ...recentMessages]
     } catch (error) {
-      logger.warn('Failed to condense conversation context. Passing original messages.', error)
+      logger.warn('Failed to condense conversation context. Passing original messages.', error as Error)
       return prompt
     }
   }

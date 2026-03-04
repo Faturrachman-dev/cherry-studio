@@ -311,7 +311,8 @@ export default class ModernAiProvider {
     const plugins = buildPlugins({
       provider: this.actualProvider,
       model: this.model!,
-      config
+      config,
+      localProvider: this.localProvider!
     })
 
     // 用构建好的插件数组创建executor

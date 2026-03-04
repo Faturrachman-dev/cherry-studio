@@ -1,4 +1,3 @@
-import path from 'path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Use vi.hoisted to define mocks that are available during hoisting
