@@ -30,10 +30,6 @@ const packages = [
   '@libsql/linux-arm64-musl',
   '@libsql/linux-x64-musl',
   '@libsql/win32-x64-msvc',
-  '@napi-rs/system-ocr-darwin-arm64',
-  '@napi-rs/system-ocr-darwin-x64',
-  '@napi-rs/system-ocr-win32-arm64-msvc',
-  '@napi-rs/system-ocr-win32-x64-msvc',
   '@strongtz/win32-arm64-msvc'
 ]
 

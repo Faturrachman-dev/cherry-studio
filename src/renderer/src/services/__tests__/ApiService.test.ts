@@ -114,11 +114,6 @@ vi.mock('@renderer/config/prompts', () => ({
   WEB_SEARCH_PROMPT_FOR_OPENROUTER: 'mock-prompt'
 }))
 
-vi.mock('@renderer/config/systemModels', () => ({
-  OPENAI_IMAGE_GENERATION_MODELS: [],
-  GENERATE_IMAGE_MODELS: []
-}))
-
 // Mock store modules
 vi.mock('@renderer/store/assistants', () => ({
   default: (state = { assistants: [] }) => state
@@ -142,10 +137,6 @@ vi.mock('@renderer/store/files', () => ({
 
 vi.mock('@renderer/store/knowledge', () => ({
   default: (state = { knowledge: [] }) => state
-}))
-
-vi.mock('@renderer/store/paintings', () => ({
-  default: (state = { paintings: [] }) => state
 }))
 
 vi.mock('@renderer/store/runtime', () => ({

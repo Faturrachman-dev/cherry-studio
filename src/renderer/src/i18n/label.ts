@@ -356,20 +356,6 @@ export const getBuiltInMcpServerDescriptionLabel = (key: string): string => {
   return getLabel(builtInMcpDescriptionKeyMap, key, t('settings.mcp.builtinServersDescriptions.no'))
 }
 
-const builtinOcrProviderKeyMap = {
-  system: 'ocr.builtin.system',
-  tesseract: '',
-  paddleocr: '',
-  ovocr: ''
-} as const
-
-export const getBuiltinOcrProviderLabel = (key: string) => {
-  if (key === 'tesseract') return 'Tesseract'
-  else if (key == 'paddleocr') return 'PaddleOCR'
-  else if (key == 'ovocr') return 'Intel OV(NPU) OCR'
-  else return getLabel(builtinOcrProviderKeyMap, key)
-}
-
 export const getAgentTypeLabel = (key: AgentType) => {
   switch (key) {
     case 'claude-code':
