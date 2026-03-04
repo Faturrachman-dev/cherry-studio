@@ -19,7 +19,7 @@ const logger = loggerService.withContext('DxtService')
  */
 export function ensurePathWithin(basePath: string, targetPath: string): string {
   const resolvedBase = path.resolve(basePath)
-  const resolvedTarget = path.resolve(path.normalize(targetPath))
+  const resolvedTarget = path.resolve(targetPath)
 
   // Must be direct child of base directory, no subdirectories allowed
   if (path.dirname(resolvedTarget) !== resolvedBase) {

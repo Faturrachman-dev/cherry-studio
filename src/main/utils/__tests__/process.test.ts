@@ -17,7 +17,8 @@ import {
 // Mock configManager
 vi.mock('@main/services/ConfigManager', () => ({
   ConfigKeys: {
-    GitBashPath: 'gitBashPath'
+    GitBashPath: 'gitBashPath',
+    GitBashPathSource: 'gitBashPathSource'
   },
   configManager: {
     get: vi.fn(),
@@ -971,9 +972,10 @@ describe.skipIf(process.platform !== 'win32')('process utilities', () => {
 
         autoDiscoverGitBash()
 
-        // Verify the exact call to configManager.set
-        expect(configManager.set).toHaveBeenCalledTimes(1)
+        // Verify the exact calls to configManager.set (path + source)
+        expect(configManager.set).toHaveBeenCalledTimes(2)
         expect(configManager.set).toHaveBeenCalledWith('gitBashPath', bashPath)
+        expect(configManager.set).toHaveBeenCalledWith('gitBashPathSource', 'auto')
       })
 
       it('should persist on each discovery when config remains undefined', () => {
@@ -987,8 +989,8 @@ describe.skipIf(process.platform !== 'win32')('process utilities', () => {
         autoDiscoverGitBash()
         autoDiscoverGitBash()
 
-        // Each call discovers and persists since config remains undefined (mocked)
-        expect(configManager.set).toHaveBeenCalledTimes(2)
+        // Each call discovers and persists path + source (2 calls each)
+        expect(configManager.set).toHaveBeenCalledTimes(4)
       })
     })
 

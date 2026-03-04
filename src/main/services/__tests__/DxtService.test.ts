@@ -53,8 +53,7 @@ describe('ensurePathWithin', () => {
     })
 
     it('should handle relative path construction', () => {
-      const target = path.join(baseDir, 'server-name')
-      expect(ensurePathWithin(baseDir, target)).toBe('/home/user/mcp/server-name')
+      expect(ensurePathWithin(baseDir, '/home/user/mcp/server-name')).toBe('/home/user/mcp/server-name')
     })
   })
 })
