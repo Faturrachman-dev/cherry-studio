@@ -45,7 +45,7 @@ const logger = loggerService.withContext('MainEntry')
 // enable local crash reports
 crashReporter.start({
   companyName: 'CherryHQ',
-  productName: 'CherryStudio',
+  productName: 'CherryStudioLite',
   submitURL: '',
   uploadToServer: false
 })

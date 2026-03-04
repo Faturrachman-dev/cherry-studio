@@ -1,5 +1,5 @@
 appId: com.kangfenmao.CherryStudio
-productName: Cherry Studio
+productName: Cherry Studio Lite
 electronLanguages:
   - zh-CN
   - zh-TW
@@ -14,7 +14,7 @@ directories:
   buildResources: build
 
 protocols:
-  - name: Cherry Studio
+  - name: Cherry Studio Lite
     schemes:
       - cherrystudio
 files:
@@ -74,7 +74,7 @@ asarUnpack:
   - "node_modules/@img/sharp-libvips-*/**"
 
 win:
-  executableName: Cherry Studio
+  executableName: Cherry Studio Lite
   artifactName: ${productName}-${version}-${arch}-setup.${ext}
   target:
     - target: nsis
@@ -120,7 +120,7 @@ linux:
   category: Utility
   desktop:
     entry:
-      Name: Cherry Studio
+      Name: Cherry Studio Lite
       StartupWMClass: CherryStudio
   mimeTypes:
     - x-scheme-handler/cherrystudio
