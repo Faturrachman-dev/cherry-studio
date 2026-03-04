@@ -59,10 +59,12 @@ If the skill is unavailable, directly read `.agents/skills/gh-create-issue/SKILL
 
 ### Key Components
 
-- **AI Core** (`src/renderer/src/aiCore/`): Middleware pipeline for multiple AI providers.
+- **AI Core** (`packages/aiCore/`): Plugin-based middleware pipeline for AI providers.
+- **AI Core Renderer** (`src/renderer/src/aiCore/`): Client-side AI integration and plugins.
 - **Services** (`src/main/services/`): MCPService, KnowledgeService, WindowService, etc.
 - **Build System**: Electron-Vite with experimental rolldown-vite, pnpm workspaces.
 - **State Management**: Redux Toolkit (`src/renderer/src/store/`) for predictable state.
+- **API Server Stubs** (`src/main/apiServer/`): Minimal stubs (utils, config, MCP service) — full API server is stripped but agent services depend on these type signatures.
 
 ### Logging
 

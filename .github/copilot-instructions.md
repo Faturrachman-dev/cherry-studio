@@ -45,9 +45,10 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - Bad: `fixed stuff`, `update`, `wip`, `bump`
 - One logical change per commit — don't mix unrelated changes
 - Commit after each working milestone, not in huge batches
+- **Atomic commits**: When making large multi-system changes (e.g., stripping features), commit each system/feature separately — never combine everything into one giant commit
 
 ### Versioning
-- Bob's fork starts from `0.x.y` — independent of upstream Cherry Studio versioning
+- This fork starts from `0.x.y` — independent of upstream Cherry Studio versioning
 - `0.MINOR.0` — new feature (e.g., `0.1.0` = context condensing)
 - `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
 - Bump version in `package.json`
@@ -93,10 +94,21 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 
 | Feature | Status | Location |
 |---------|--------|----------|
-| Intelligent Context Condensing | ✅ Done | `src/renderer/src/aiCore/plugins/condenseContextPlugin.ts` |
+| Intelligent Context Condensing | ✅ Done | `packages/aiCore/src/core/middleware/condense.ts` + `src/renderer/src/aiCore/plugins/condenseContextPlugin.ts` |
 | Condense Toolbar Button | ✅ Done | `src/renderer/src/pages/home/Inputbar/tools/condenseMessagesTool.tsx` |
 | /condense Slash Command | ✅ Done | QuickPanel integration in condenseMessagesTool |
 | Settings Toggle | ✅ Done | `src/renderer/src/pages/settings/GeneralSettings.tsx` |
+
+## Stripped Features (Tier 1 — Completed)
+
+| Feature | Status | Approach |
+|---------|--------|----------|
+| Paintings/Image Generation | ✅ Stripped | Pages, store, OVMS, hooks deleted; sidebar/router cleaned |
+| API Server REST API | ✅ Stripped | Routes/middleware/services deleted; minimal stubs in `src/main/apiServer/` for agent compat |
+| OCR | ✅ Stripped | Services, store, hooks, types, settings UI, config deleted |
+| LAN Transfer | ✅ Stripped | Services, IPC handlers, popup deleted |
+| Analytics/Telemetry | ✅ Stripped | Service deleted; `utils/analytics.ts` is a no-op stub |
+| Knowledge Base (partial) | ✅ Trimmed | Sitemap loader removed; PDF, Markdown, CSV retained |
 
 ## Feature Stripping Plan
 
@@ -104,5 +116,28 @@ When removing upstream features not needed by Owner:
 - Remove all entry points (UI buttons, context menus, shortcuts, sidebar icons)
 - Remove associated Redux state, reducers, and selectors
 - Remove corresponding services and IPC handlers
+- Delete test files for deleted services (don't leave orphaned tests)
 - Clean up i18n keys
+- For `migrate.ts`: add `@ts-ignore -- stripped feature` before references to stripped state — never delete migrations
+- For cross-cutting dependencies (agent services importing API server utils): create minimal stubs that preserve type signatures
 - Run `pnpm build:check` to verify nothing breaks
+- Commit each stripped feature/system separately
+
+## Known Pitfalls (Lessons Learned)
+
+### pnpm
+- `pnpm remove <pkg>` can hang indefinitely on Windows — edit `package.json` manually + `pnpm install --no-frozen-lockfile` instead
+
+### Path Handling
+- Never mix `path.normalize()` with `path.resolve()` — `normalize` converts `/` to `\` on Windows but `resolve` may not, causing string comparison mismatches
+- Use `path.relative()` for containment checks instead of `startsWith()` — it's separator-agnostic
+- Tests with hardcoded POSIX paths (e.g., `/home/user/mcp/...`) behave differently on Windows because `path.resolve` adds drive letters
+
+### Migrations (`migrate.ts`)
+- Never delete migration functions — they run on existing user databases
+- Use `@ts-ignore` before references to stripped state slices
+- Keep stripped config imports either via `@ts-ignore` or minimal stub files
+
+### JSON Editing
+- Be careful with `replace_string_in_file` on `package.json` — literal `\n` and escaped `\"` can corrupt the file
+- Always validate JSON after editing: `node -e "JSON.parse(require('fs').readFileSync('package.json','utf-8'))"`
