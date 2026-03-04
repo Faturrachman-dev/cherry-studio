@@ -26,6 +26,7 @@ import {
   Home,
   Languages,
   LayoutGrid,
+  MessageSquare,
   Monitor,
   Moon,
   NotepadText,
@@ -57,6 +58,11 @@ const getTabIcon = (
   minapps: MinAppType[],
   minAppsCache?: LRUCache<string, MinAppType>
 ): React.ReactNode | undefined => {
+  // Check if it's a topic tab (format: topic:topicId)
+  if (tabId.startsWith('topic:')) {
+    return <MessageSquare size={14} />
+  }
+
   // Check if it's a minapp tab (format: apps:appId)
   if (tabId.startsWith('apps:')) {
     const appId = tabId.replace('apps:', '')
@@ -129,6 +135,7 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
   const { minapps } = useMinapps()
   const { useSystemTitleBar } = useSettings()
   const { t } = useTranslation()
+  const assistants = useAppSelector((state) => state.assistants.assistants)
 
   const getTabId = (path: string): string => {
     if (path === '/') return 'home'
@@ -137,10 +144,26 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
     if (segments[1] === 'apps' && segments[2]) {
       return `apps:${segments[2]}`
     }
+    // Handle topic paths: /topic/topicId -> topic:topicId
+    if (segments[1] === 'topic' && segments[2]) {
+      return `topic:${segments[2]}`
+    }
     return segments[1] // 获取第一个路径段作为 id
   }
 
   const getTabTitle = (tabId: string): string => {
+    // Check if it's a topic tab
+    if (tabId.startsWith('topic:')) {
+      const tId = tabId.replace('topic:', '')
+      for (const a of assistants) {
+        const topic = a.topics?.find((t) => t.id === tId)
+        if (topic) {
+          return topic.name || t('chat.default.topic.name', 'Topic')
+        }
+      }
+      return t('chat.default.topic.name', 'Topic')
+    }
+
     // Check if it's a minapp tab
     if (tabId.startsWith('apps:')) {
       const appId = tabId.replace('apps:', '')

@@ -1081,6 +1081,8 @@
     "thinking": "Thinking ({{seconds}} seconds)",
     "topics": {
       "auto_rename": "Auto Rename",
+      "open_in_tab": "Open in New Tab",
+      "tab_limit_reached": "Maximum {{count}} topic tabs allowed",
       "clear": {
         "title": "Clear Messages"
       },

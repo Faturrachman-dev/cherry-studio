@@ -44,6 +44,8 @@ interface Props {
   activeTopic: Topic
   setActiveTopic: (topic: Topic) => void
   setActiveAssistant: (assistant: Assistant) => void
+  /** When true, hides the right-side topics sidebar (used by topic tabs) */
+  hideTopicsSidebar?: boolean
 }
 
 const Chat: FC<Props> = (props) => {
@@ -261,7 +263,7 @@ const Chat: FC<Props> = (props) => {
           </Main>
         </motion.div>
         <AnimatePresence initial={false}>
-          {topicPosition === 'right' && showTopics && (
+          {topicPosition === 'right' && showTopics && !props.hideTopicsSidebar && (
             <motion.div
               key="right-tabs"
               initial={{ width: 0, opacity: 0 }}

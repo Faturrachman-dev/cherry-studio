@@ -11,7 +11,7 @@ import { useAssistant, useAssistants } from '@renderer/hooks/useAssistant'
 import { useInPlaceEdit } from '@renderer/hooks/useInPlaceEdit'
 import { useNotesSettings } from '@renderer/hooks/useNotesSettings'
 import { modelGenerating } from '@renderer/hooks/useRuntime'
-import { useSettings } from '@renderer/hooks/useSettings'
+import { useNavbarPosition, useSettings } from '@renderer/hooks/useSettings'
 import { finishTopicRenaming, startTopicRenaming, TopicManager } from '@renderer/hooks/useTopic'
 import { fetchMessagesSummary } from '@renderer/services/ApiService'
 import { getDefaultTopic } from '@renderer/services/AssistantService'
@@ -20,6 +20,7 @@ import type { RootState } from '@renderer/store'
 import store from '@renderer/store'
 import { newMessagesActions } from '@renderer/store/newMessage'
 import { setGenerating } from '@renderer/store/runtime'
+import { addTab } from '@renderer/store/tabs'
 import type { Assistant, Topic } from '@renderer/types'
 import { classNames, removeSpecialCharactersForFileName } from '@renderer/utils'
 import { copyTopicAsMarkdown, copyTopicAsPlainText } from '@renderer/utils/copy'
@@ -40,6 +41,7 @@ import { findIndex } from 'lodash'
 import {
   BrushCleaning,
   CheckSquare,
+  ExternalLink,
   FolderOpen,
   HelpCircle,
   ListChecks,
@@ -57,10 +59,13 @@ import {
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import AddButton from './AddButton'
 import { TopicManagePanel, useTopicManageMode } from './TopicManageMode'
+
+const MAX_TOPIC_TABS = 5
 
 interface Props {
   assistant: Assistant
@@ -71,10 +76,13 @@ interface Props {
 
 export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, setActiveTopic, position }) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { notesPath } = useNotesSettings()
   const { assistants } = useAssistants()
   const { assistant, addTopic, removeTopic, moveTopic, updateTopic, updateTopics } = useAssistant(_assistant.id)
   const { showTopicTime, pinTopicsToTop, setTopicPosition, topicPosition } = useSettings()
+  const { isTopNavbar } = useNavbarPosition()
+  const tabs = useSelector((state: RootState) => state.tabs.tabs)
 
   const renamingTopics = useSelector((state: RootState) => state.runtime.chat.renamingTopics)
   const topicLoadingQuery = useSelector((state: RootState) => state.messages.loadingByTopic)
@@ -251,6 +259,29 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     if (!topic) return []
 
     const menus: MenuProps['items'] = [
+      // "Open in New Tab" — only shown when using top navbar (tab bar visible)
+      ...(isTopNavbar
+        ? [
+            {
+              label: t('chat.topics.open_in_tab', 'Open in New Tab'),
+              key: 'open-in-tab',
+              icon: <ExternalLink size={14} />,
+              disabled: tabs.filter((tab) => tab.id.startsWith('topic:')).length >= MAX_TOPIC_TABS,
+              onClick() {
+                const topicTabCount = tabs.filter((tab) => tab.id.startsWith('topic:')).length
+                if (topicTabCount >= MAX_TOPIC_TABS) {
+                  window.toast?.warning(t('chat.topics.tab_limit_reached', { count: MAX_TOPIC_TABS }))
+                  return
+                }
+                const tabId = `topic:${topic.id}`
+                const tabPath = `/topic/${topic.id}`
+                dispatch(addTab({ id: tabId, path: tabPath }))
+                navigate(tabPath)
+              }
+            },
+            { type: 'divider' as const }
+          ]
+        : []),
       {
         label: t('chat.topics.auto_rename'),
         key: 'auto-rename',
@@ -505,6 +536,10 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
   }, [
     targetTopic,
     t,
+    isTopNavbar,
+    tabs,
+    dispatch,
+    navigate,
     isRenaming,
     exportMenuOptions.image,
     exportMenuOptions.markdown,

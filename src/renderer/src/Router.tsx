@@ -16,6 +16,7 @@ import KnowledgePage from './pages/knowledge/KnowledgePage'
 import LaunchpadPage from './pages/launchpad/LaunchpadPage'
 import MinAppPage from './pages/minapps/MinAppPage'
 import MinAppsPage from './pages/minapps/MinAppsPage'
+import TopicPage from './pages/home/TopicPage'
 import NotesPage from './pages/notes/NotesPage'
 import SettingsPage from './pages/settings/SettingsPage'
 import AssistantPresetsPage from './pages/store/assistants/presets/AssistantPresetsPage'
@@ -29,6 +30,7 @@ const Router: FC = () => {
       <ErrorBoundary>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/topic/:topicId" element={<TopicPage />} />
           <Route path="/store" element={<AssistantPresetsPage />} />
           <Route path="/translate" element={<TranslatePage />} />
           <Route path="/files" element={<FilesPage />} />
