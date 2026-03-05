@@ -31,9 +31,9 @@ vi.mock('react-i18next', () => ({
 
 describe('CopyButton', () => {
   beforeEach(() => {
-    // Setup mocks
-    Object.assign(navigator, { clipboard: mockClipboard })
-    Object.assign(window, { toast: mockedToast })
+    // Setup mocks — use defineProperty for happy-dom (clipboard is a getter-only property)
+    Object.defineProperty(navigator, 'clipboard', { value: mockClipboard, writable: true, configurable: true })
+    Object.defineProperty(window, 'toast', { value: mockedToast, writable: true, configurable: true })
 
     // Clear all mocks
     vi.clearAllMocks()

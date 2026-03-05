@@ -200,10 +200,13 @@ describe('CitationTooltip', () => {
       renderCitationTooltip(citation)
 
       const contentElement = screen.getByText(longContent)
-      expect(contentElement).toHaveStyle({
-        display: '-webkit-box',
-        overflow: 'hidden'
-      })
+      // Styled-components inject CSS via <style> tags; verify the element has
+      // a class and that the associated stylesheet contains line-clamp rules
+      expect(contentElement.className).toBeTruthy()
+      const styleSheets = Array.from(document.querySelectorAll('style'))
+      const allCSS = styleSheets.map((s) => s.textContent || '').join(' ')
+      expect(allCSS).toMatch(/overflow:\s*hidden/)
+      expect(allCSS).toMatch(/display:\s*-webkit-box/)
     })
 
     it('should handle special characters in title and content', () => {

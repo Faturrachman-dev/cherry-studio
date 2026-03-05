@@ -350,10 +350,10 @@ describe('ThinkingBlock', () => {
         const contentContainer = screen.getByTestId('collapse-content-thought')
         const styledDiv = contentContainer.querySelector('div')
 
-        expect(styledDiv).toHaveStyle({
-          fontFamily: expectedFont,
-          fontSize: expectedSize
-        })
+        // happy-dom doesn't resolve CSS variables; check raw style attribute
+        const style = styledDiv?.getAttribute('style') || ''
+        expect(style).toContain(expectedFont)
+        expect(style).toContain(expectedSize)
 
         unmount()
       })

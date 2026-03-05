@@ -252,9 +252,17 @@ describe('MainTextBlock', () => {
       renderMainTextBlock({ block, role: 'assistant', mentions })
 
       const mentionElement = screen.getByText('@Test Model')
-      expect(mentionElement).toHaveStyle({ color: 'var(--color-link)' })
+      // Styled-components inject CSS via <style> tags; check the injected stylesheet
+      const className = mentionElement.className
+      const styleSheets = Array.from(document.styleSheets)
+      const allRules = styleSheets.flatMap((sheet) => {
+        try { return Array.from(sheet.cssRules).map((r) => r.cssText) } catch { return [] }
+      })
+      const matchingRules = allRules.filter((r) => className.split(' ').some((c) => r.includes(c)))
+      const combinedCSS = matchingRules.join(' ')
+      expect(combinedCSS).toMatch(/color:\s*var\(--color-link\)/)
 
-      // Check container layout
+      // Check container layout (inline styles from styled JSX)
       const container = mentionElement.closest('[style*="gap"]')
       expect(container).toHaveStyle({
         gap: '8px',

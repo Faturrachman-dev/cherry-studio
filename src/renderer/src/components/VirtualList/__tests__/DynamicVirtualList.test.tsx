@@ -89,7 +89,9 @@ describe('DynamicVirtualList', () => {
 
       const scrollContainer = document.querySelector('.dynamic-virtual-list')
       expect(scrollContainer).toBeInTheDocument()
-      expect(scrollContainer).toHaveStyle('background-color: rgb(255, 0, 0)')
+      // happy-dom keeps color names as-is; jsdom normalizes to rgb()
+      const bgStyle = scrollContainer?.getAttribute('style') || ''
+      expect(bgStyle).toMatch(/background-color:\s*(rgb\(255,\s*0,\s*0\)|red)/)
       expect(scrollContainer).toHaveStyle('height: 400px')
     })
 
