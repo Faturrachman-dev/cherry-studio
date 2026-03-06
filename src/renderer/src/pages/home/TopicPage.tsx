@@ -1,6 +1,7 @@
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useActiveTopic } from '@renderer/hooks/useTopic'
 import NavigationService from '@renderer/services/NavigationService'
+import type { RootState } from '@renderer/store'
 import { newMessagesActions } from '@renderer/store/newMessage'
 import { setActiveTopicOrSessionAction } from '@renderer/store/runtime'
 import type { Assistant, Topic } from '@renderer/types'
@@ -9,8 +10,6 @@ import { startTransition, useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
-import type { RootState } from '@renderer/store'
 
 import Chat from './Chat'
 

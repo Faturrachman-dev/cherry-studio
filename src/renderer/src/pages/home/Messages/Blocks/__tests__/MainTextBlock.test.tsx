@@ -256,7 +256,11 @@ describe('MainTextBlock', () => {
       const className = mentionElement.className
       const styleSheets = Array.from(document.styleSheets)
       const allRules = styleSheets.flatMap((sheet) => {
-        try { return Array.from(sheet.cssRules).map((r) => r.cssText) } catch { return [] }
+        try {
+          return Array.from(sheet.cssRules).map((r) => r.cssText)
+        } catch {
+          return []
+        }
       })
       const matchingRules = allRules.filter((r) => className.split(' ').some((c) => r.includes(c)))
       const combinedCSS = matchingRules.join(' ')
