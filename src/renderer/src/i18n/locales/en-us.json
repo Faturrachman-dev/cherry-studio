@@ -1081,8 +1081,6 @@
     "thinking": "Thinking ({{seconds}} seconds)",
     "topics": {
       "auto_rename": "Auto Rename",
-      "open_in_tab": "Open in New Tab",
-      "tab_limit_reached": "Maximum {{count}} topic tabs allowed",
       "clear": {
         "title": "Clear Messages"
       },
@@ -1175,6 +1173,7 @@
       },
       "move_to": "Move to",
       "new": "New Topic",
+      "open_in_tab": "Open in New Tab",
       "pin": "Pin Topic",
       "prompt": {
         "edit": {
@@ -1187,6 +1186,7 @@
         "placeholder": "Search topics...",
         "title": "Search"
       },
+      "tab_limit_reached": "Maximum {{count}} topic tabs allowed",
       "title": "Topics",
       "unpin": "Unpin Topic"
     },

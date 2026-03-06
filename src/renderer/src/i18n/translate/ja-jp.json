@@ -1173,6 +1173,7 @@
       },
       "move_to": "移動先",
       "new": "新しいトピック",
+      "open_in_tab": "[to be translated]:Open in New Tab",
       "pin": "トピックを固定",
       "prompt": {
         "edit": {
@@ -1185,6 +1186,7 @@
         "placeholder": "トピックを検索...",
         "title": "検索"
       },
+      "tab_limit_reached": "[to be translated]:Maximum {{count}} topic tabs allowed",
       "title": "トピック",
       "unpin": "固定解除"
     },
@@ -2957,7 +2959,9 @@
     "no_description": "説明なし",
     "no_installed_plugins": "まだプラグインがインストールされていません",
     "no_results": "プラグインが見つかりません",
+    "no_results_skills": "[to be translated]:No skills found",
     "search_placeholder": "検索プラグイン...",
+    "search_placeholder_skills": "[to be translated]:Search skills...",
     "showing_results": "{{count}} 個のプラグインを表示",
     "showing_results_one": "{{count}} 個のプラグインを表示",
     "showing_results_other": "{{count}} 個のプラグインを表示",

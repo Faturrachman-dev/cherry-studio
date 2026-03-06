@@ -1173,6 +1173,7 @@
       },
       "move_to": "Mover a",
       "new": "Iniciar nueva conversación",
+      "open_in_tab": "[to be translated]:Open in New Tab",
       "pin": "Fijar tema",
       "prompt": {
         "edit": {
@@ -1185,6 +1186,7 @@
         "placeholder": "Buscar temas...",
         "title": "Buscar"
       },
+      "tab_limit_reached": "[to be translated]:Maximum {{count}} topic tabs allowed",
       "title": "Tema",
       "unpin": "Quitar fijación"
     },
@@ -2957,7 +2959,9 @@
     "no_description": "Sin descripción",
     "no_installed_plugins": "Aún no se ha instalado ningún complemento",
     "no_results": "No se encontró el complemento",
+    "no_results_skills": "[to be translated]:No skills found",
     "search_placeholder": "Buscar complemento...",
+    "search_placeholder_skills": "[to be translated]:Search skills...",
     "showing_results": "Mostrar {{count}} complementos",
     "showing_results_one": "Mostrar {{count}} complementos",
     "showing_results_other": "Mostrar {{count}} complementos",

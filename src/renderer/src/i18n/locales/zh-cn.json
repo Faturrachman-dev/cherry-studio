@@ -1173,6 +1173,7 @@
       },
       "move_to": "移动到",
       "new": "开始新对话",
+      "open_in_tab": "[to be translated]:Open in New Tab",
       "pin": "固定话题",
       "prompt": {
         "edit": {
@@ -1185,6 +1186,7 @@
         "placeholder": "搜索话题...",
         "title": "搜索"
       },
+      "tab_limit_reached": "[to be translated]:Maximum {{count}} topic tabs allowed",
       "title": "话题",
       "unpin": "取消固定"
     },

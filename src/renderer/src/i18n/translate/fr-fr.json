@@ -1173,6 +1173,7 @@
       },
       "move_to": "Déplacer vers",
       "new": "Commencer une nouvelle conversation",
+      "open_in_tab": "[to be translated]:Open in New Tab",
       "pin": "Fixer le sujet",
       "prompt": {
         "edit": {
@@ -1185,6 +1186,7 @@
         "placeholder": "Rechercher des sujets...",
         "title": "Rechercher"
       },
+      "tab_limit_reached": "[to be translated]:Maximum {{count}} topic tabs allowed",
       "title": "Sujet",
       "unpin": "Annuler le fixage"
     },
@@ -2957,7 +2959,9 @@
     "no_description": "Sans description",
     "no_installed_plugins": "Aucun plugin n’est encore installé",
     "no_results": "Aucun plugin trouvé",
+    "no_results_skills": "[to be translated]:No skills found",
     "search_placeholder": "Rechercher des modules d'extension...",
+    "search_placeholder_skills": "[to be translated]:Search skills...",
     "showing_results": "Afficher {{count}} extensions",
     "showing_results_one": "Afficher {{count}} modules d’extension",
     "showing_results_other": "Afficher {{count}} modules d'extension",

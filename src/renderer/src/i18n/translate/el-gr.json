@@ -1173,6 +1173,7 @@
       },
       "move_to": "Μετακίνηση στο",
       "new": "Ξεκινήστε νέα συζήτηση",
+      "open_in_tab": "[to be translated]:Open in New Tab",
       "pin": "Σταθερά θέματα",
       "prompt": {
         "edit": {
@@ -1185,6 +1186,7 @@
         "placeholder": "Αναζήτηση θεμάτων...",
         "title": "Αναζήτηση"
       },
+      "tab_limit_reached": "[to be translated]:Maximum {{count}} topic tabs allowed",
       "title": "Θέματα",
       "unpin": "Ξεκαρφίτσωμα"
     },
@@ -2957,7 +2959,9 @@
     "no_description": "Χωρίς περιγραφή",
     "no_installed_plugins": "Δεν έχει εγκατασταθεί κανένα πρόσθετο",
     "no_results": "Δεν βρέθηκε πρόσθετο",
+    "no_results_skills": "[to be translated]:No skills found",
     "search_placeholder": "Πρόσθετο αναζήτησης...",
+    "search_placeholder_skills": "[to be translated]:Search skills...",
     "showing_results": "Εμφάνιση {{count}} προσθέτων",
     "showing_results_one": "Εμφάνιση {{count}} προσθέτων",
     "showing_results_other": "Εμφάνιση {{count}} προσθέτων",
