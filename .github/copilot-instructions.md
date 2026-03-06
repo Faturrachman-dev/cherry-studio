@@ -53,7 +53,7 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
 - Bump version in `package.json`
 - Tag releases when publishing: `git tag v0.X.Y && git push --tags`
-- Current version: **0.1.0**
+- Current version: **0.1.1**
 
 ### Things to Never Commit
 - Debug/test files, `.env` files, secrets
@@ -98,6 +98,7 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 | Condense Toolbar Button | ✅ Done | `src/renderer/src/pages/home/Inputbar/tools/condenseMessagesTool.tsx` |
 | /condense Slash Command | ✅ Done | QuickPanel integration in condenseMessagesTool |
 | Settings Toggle | ✅ Done | `src/renderer/src/pages/settings/GeneralSettings.tsx` |
+| Topic Tabs | ✅ Done | `src/renderer/src/components/Tab/TabContainer.tsx` + `TopicPage.tsx` |
 
 ## Stripped Features (Tier 1 — Completed)
 
@@ -109,6 +110,15 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 | LAN Transfer | ✅ Stripped | Services, IPC handlers, popup deleted |
 | Analytics/Telemetry | ✅ Stripped | Service deleted; `utils/analytics.ts` is a no-op stub |
 | Knowledge Base (partial) | ✅ Trimmed | Sitemap loader removed; PDF, Markdown, CSV retained |
+
+## Performance Optimizations (Completed)
+
+| Optimization | Impact | Details |
+|---|---|---|
+| jsdom → happy-dom | ~80s saved | Renderer tests use `happy-dom` instead of `jsdom` |
+| Lazy-load heavy deps | ~20-40s saved | `antd` notification, `browser-image-compression`, `html-to-image` lazy-imported |
+| Break toxic barrel imports | Reduces collect phase | `utils/index.ts` uses targeted re-exports instead of `export *` for heavy modules |
+| Guard `navigator` in i18n | Unblocks node env | `i18n/index.ts` wraps `navigator.language` in try/catch |
 
 ## Feature Stripping Plan
 
@@ -141,3 +151,10 @@ When removing upstream features not needed by Owner:
 ### JSON Editing
 - Be careful with `replace_string_in_file` on `package.json` — literal `\n` and escaped `\"` can corrupt the file
 - Always validate JSON after editing: `node -e "JSON.parse(require('fs').readFileSync('package.json','utf-8'))"`
+
+### Test Performance
+- **Bottleneck is module collection** (~1100s across 8 threads for 139 renderer files) — Vitest walks import graphs per file
+- Splitting renderer tests into node/happy-dom projects **doesn't help** — transitive DOM imports (antd, katex, i18n) and duplicate module resolution make it slower
+- `vmThreads` pool is faster for env setup but breaks `ReadableStream`/`AbortSignal` instanceof checks across VM boundaries
+- `forks` pool, `deps.optimizer`, and reducing `maxThreads` all measured slower than default `threads`
+- **Best levers**: happy-dom (done), lazy-loading heavy deps (done), barrel export cleanup (done)

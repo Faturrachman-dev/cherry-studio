@@ -48,6 +48,7 @@ If the skill is unavailable, directly read `.agents/skills/gh-create-issue/SKILL
   - `pnpm test:renderer` - Run tests for renderer process only
 - **Lint**: `pnpm lint` - Fix linting issues and run TypeScript type checking
 - **Format**: `pnpm format` - Auto-format code using Biome
+- **i18n Sync**: `pnpm i18n:sync` - Sync i18n template (run before `pnpm lint` if i18n sort errors)
 
 ## Project Architecture
 
