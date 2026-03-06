@@ -8,6 +8,7 @@ import { getStoreSetting } from '@renderer/hooks/useSettings'
 import type { Assistant, Model, Provider } from '@renderer/types'
 import { SystemProviderIds } from '@renderer/types'
 import { isOllamaProvider, isSupportEnableThinkingProvider } from '@renderer/utils/provider'
+import type { Provider as AiSdkProvider } from 'ai'
 
 import { getAiSdkProviderId } from '../provider/factory'
 import type { AiSdkMiddlewareConfig } from '../types/middlewareConfig'
@@ -38,7 +39,7 @@ export interface BuildPluginsContext {
   model: Model
   config: AiSdkMiddlewareConfig & { assistant: Assistant; topicId?: string }
   /** Pre-created AI SDK provider instance for creating language models */
-  localProvider: import('ai').Provider
+  localProvider: AiSdkProvider
 }
 
 /**
