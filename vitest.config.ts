@@ -8,7 +8,7 @@ const rendererConfig = (electronViteConfig as any).renderer
 export default defineConfig({
   test: {
     projects: [
-      // 主进程单元测试配置
+      // Main process tests
       {
         extends: true,
         plugins: mainConfig.plugins,
@@ -22,7 +22,7 @@ export default defineConfig({
           include: ['src/main/**/*.{test,spec}.{ts,tsx}', 'src/main/**/__tests__/**/*.{test,spec}.{ts,tsx}']
         }
       },
-      // 渲染进程单元测试配置
+      // Renderer tests (happy-dom)
       {
         extends: true,
         plugins: rendererConfig.plugins.filter((plugin: any) => plugin.name !== 'tailwindcss'),
@@ -36,7 +36,7 @@ export default defineConfig({
           include: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{test,spec}.{ts,tsx}']
         }
       },
-      // 脚本单元测试配置
+      // Scripts tests
       {
         extends: true,
         test: {
@@ -45,7 +45,7 @@ export default defineConfig({
           include: ['scripts/**/*.{test,spec}.{ts,tsx}', 'scripts/**/__tests__/**/*.{test,spec}.{ts,tsx}']
         }
       },
-      // aiCore 包单元测试配置
+      // aiCore package tests
       {
         extends: 'packages/aiCore/vitest.config.ts',
         test: {
@@ -57,7 +57,7 @@ export default defineConfig({
           ]
         }
       },
-      // shared 包单元测试配置
+      // shared package tests
       {
         extends: true,
         test: {
@@ -70,7 +70,7 @@ export default defineConfig({
         }
       }
     ],
-    // 全局共享配置
+    // Global shared config
     globals: true,
     setupFiles: [],
     exclude: ['**/node_modules/**', '**/dist/**', '**/out/**', '**/build/**'],

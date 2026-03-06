@@ -48,7 +48,11 @@ const resources = Object.fromEntries(
 )
 
 export const getLanguage = () => {
-  return localStorage.getItem('language') || navigator.language || defaultLanguage
+  try {
+    return localStorage.getItem('language') || navigator.language || defaultLanguage
+  } catch {
+    return defaultLanguage
+  }
 }
 
 export const getLanguageCode = () => {

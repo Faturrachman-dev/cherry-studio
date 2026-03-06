@@ -213,12 +213,39 @@ export function uniqueObjectArray<T>(array: T[]): T[] {
 
 export * from './api'
 export * from './collection'
-export * from './dataLimit'
 export * from './dom'
 export * from './file'
-export * from './image'
 export * from './json'
-export * from './match'
-export * from './naming'
 export * from './sort'
 export * from './style'
+
+// Re-export only the symbols actually used via barrel from modules with heavy transitive deps.
+// Consumers needing other exports should import directly from the submodule.
+export { checkDataLimit } from './dataLimit'
+export {
+  captureScrollableAsBlob,
+  captureScrollableAsDataURL,
+  compressImage,
+  convertToBase64
+} from './image'
+export {
+  filterModelsByKeywords,
+  matchKeywordsInModel,
+  matchKeywordsInProvider,
+  matchKeywordsInString
+} from './match'
+export {
+  firstLetter,
+  getBaseModelName,
+  getBriefInfo,
+  getDefaultGroupName,
+  getFancyProviderName,
+  getFirstCharacter,
+  getLeadingEmoji,
+  getLowerBaseModelName,
+  isEmoji,
+  removeLeadingEmoji,
+  removeSpecialCharactersForTopicName,
+  sanitizeProviderName,
+  truncateText
+} from './naming'

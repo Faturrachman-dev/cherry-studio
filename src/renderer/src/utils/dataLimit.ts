@@ -1,7 +1,6 @@
 import { loggerService } from '@logger'
 import type { AppInfo } from '@renderer/types'
 import { GB, MB } from '@shared/config/constant'
-import { notification } from 'antd'
 import { t } from 'i18next'
 
 const logger = loggerService.withContext('useDataLimit')
@@ -67,6 +66,7 @@ export async function checkDataLimit() {
     // Show or hide notification based on warning state
     if (shouldShowWarning && !diskWarningNotificationKey) {
       const key = `disk-warning-${Date.now()}`
+      const { notification } = await import('antd')
       notification.warning({
         message: t('settings.data.limit.appDataDiskQuota'),
         description: t('settings.data.limit.appDataDiskQuotaDescription'),
@@ -83,6 +83,7 @@ export async function checkDataLimit() {
       currentInterval = setInterval(check, CHECK_INTERVAL_WARNING)
     } else if (!shouldShowWarning && diskWarningNotificationKey) {
       // Dismiss notification when space is recovered
+      const { notification } = await import('antd')
       notification.destroy(diskWarningNotificationKey)
       diskWarningNotificationKey = null
 
