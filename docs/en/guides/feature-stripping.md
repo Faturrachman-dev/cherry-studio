@@ -8,6 +8,29 @@ Use this as a reference checklist before stripping anything. Read through carefu
 
 ---
 
+## What "Simplified" Means (Phase 2 Strategy)
+
+Tier 2 features were handled with a **two-mode approach** rather than a blanket delete:
+
+### Mode A — Full Strip
+Used when a feature is a dead-end integration (no shared code, standalone service) or is China-market-specific. Deleted all associated pages, services, IPC handlers, preload APIs, Redux slices, and settings UI. Notable examples: Nutstore, OpenClaw, Joplin/Siyuan/Yuque, DXT, Launchpad, Files Manager.
+
+### Mode B — Simplified / Kept As-Is
+Used when a feature is:
+- Already lean (< ~700 LOC total) and has no removable dead weight
+- Deeply wired into non-feature code (e.g., overlay windows, global keyboard hooks)
+- Independently useful for a solo AI workflow
+
+In these cases the feature was left untouched rather than partially gutted — a half-removed feature is worse than either a clean strip or a clean keep. Examples: Selection Assistant, Quick Assistant, Quick Phrases, Obsidian/Notion export.
+
+### Stripping vs. Stubbing
+Some stripped features leave **minimal stubs** where cross-cutting dependencies require it:
+- `src/main/apiServer/` — stub utils/config kept because agent services import from them
+- `utils/analytics.ts` — no-op stub so all import sites don't need to change
+- `migrate.ts` — migration functions are **never deleted**, even for stripped state slices; `@ts-ignore` + optional chaining handles type safety
+
+---
+
 ## How to Read This Doc
 
 Each entry contains:

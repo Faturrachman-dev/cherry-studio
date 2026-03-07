@@ -53,7 +53,7 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
 - Bump version in `package.json`
 - Tag releases when publishing: `git tag v0.X.Y && git push --tags`
-- Current version: **0.1.1**
+- Current version: **0.2.0**
 
 ### Things to Never Commit
 - Debug/test files, `.env` files, secrets
