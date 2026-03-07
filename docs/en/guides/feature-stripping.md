@@ -92,16 +92,7 @@ Enterprise and power users who want a fully offline knowledge management system 
 
 **Size** → **Very High** — 57+ files, 13 npm packages, native SQLite binaries
 
-**Recommendation: Evaluate carefully before stripping**
-
-> You said you might use Knowledge Base. The key question is: do you need *document ingestion + vector search*, or do you just want to *paste context manually* into the chat?
->
-> - If you paste docs manually or use Claude's/Gemini's large context window → **strip it**
-> - If you genuinely upload and query your own PDFs/notes → **keep it**
->
-> Even if you keep it, consider keeping only specific loaders (e.g., PDF + markdown only) and removing YouTube, sitemap, XML, office loaders.
-
-**If stripped** — Also remove the sidebar `knowledge` icon entry, the `knowledge` route in the router, and the Knowledge Base button in assistants.
+**Status: ✅ Trimmed** — Sitemap loader removed; PDF, Markdown, CSV retained. Knowledge page, store, and sidebar icon kept.
 
 ---
 
@@ -130,11 +121,7 @@ No exclusive npm packages (uses existing AI SDK providers), but `OvmsManager.ts`
 
 **Size** → **High** — 33+ files, 577 LOC heavyweight service
 
-**Recommendation: Strip**
-
-> Pure image generation is a different workflow from AI chat. If you want to generate images, use a dedicated tool. Removing this also kills the OVMS manager which is Intel-GPU–specific and not needed unless you're running OpenVINO locally.
-
-**If stripped** — Remove `paintings` sidebar icon, `paintings` store slice, `paintings` route, and `OvmsManager.ts`. Clean up `electron-builder.yml` if it packages OVMS binaries.
+**Status: ✅ Stripped** — Pages, store, OVMS manager, hooks deleted; sidebar icon and router entry cleaned.
 
 ---
 
@@ -169,11 +156,7 @@ cors
 
 **Size** → **High** — 33 files + 5 packages
 
-**Recommendation: Strip**
-
-> You're the only user of your fork. You don't need an HTTP endpoint inside your desktop chat app. Removing this simplifies startup, eliminates an open port, and removes a security surface.
-
-**If stripped** — Remove `apiServer` from settings state and UI, remove API Server menu items, remove `express`/`swagger` deps.
+**Status: ✅ Stripped** — Routes, middleware, services deleted. Minimal stubs kept in `src/main/apiServer/` (utils, config, MCP service) because agent services import from them.
 
 ---
 
@@ -203,11 +186,7 @@ tesseract.js          # ~15MB WASM binary
 
 **Size** → **Medium** files, but **Very Heavy** binaries (WASM + native, adds significant bundle size)
 
-**Recommendation: Strip**
-
-> Modern LLMs (GPT-4o, Gemini, Claude) can read text in images directly via vision. You don't need a separate OCR engine — just attach the image and ask the model to extract the text. Removing this eliminates the largest binary payload in the app.
-
-**If stripped** — Remove OCR menu items from image context menus, remove `ocr` store slice, remove both OCR packages from `package.json`.
+**Status: ✅ Stripped** — Services, store, hooks, types, settings UI, and config deleted.
 
 ---
 
@@ -236,11 +215,7 @@ bonjour-service   # mDNS/Bonjour discovery
 
 **Size** → **High** — 13 files + custom binary protocol implementation
 
-**Recommendation: Strip**
-
-> Solo use. There's no other Cherry Studio instance to transfer to.
-
-**If stripped** — Remove the LAN Transfer page/button from sidebar or settings, remove `bonjour-service` dep.
+**Status: ✅ Stripped** — Services, IPC handlers, popup deleted.
 
 ---
 
@@ -266,7 +241,7 @@ notion-helper          # Notion block builder utilities
 @tryfabric/martian     # Markdown-to-Notion block converter
 ```
 
-**Recommendation: Strip** (unless you actively use Notion as your notes system)
+**Status: ✅ Kept** — Retained as a useful lightweight export target.
 
 ---
 
@@ -280,7 +255,7 @@ Exports markdown content to [Yuque](https://www.yuque.com/) — a Chinese collab
 
 **Dependencies** — None exclusive (uses `axios`)
 
-**Recommendation: Strip** (Yuque is China-market-specific)
+**Status: ✅ Stripped** — Export function, settings page, and menu items deleted.
 
 ---
 
@@ -294,7 +269,7 @@ Exports conversations to [Joplin](https://joplinapp.org/) — an open-source mar
 
 **Dependencies** — None exclusive
 
-**Recommendation: Strip** (unless Joplin is your daily notes tool)
+**Status: ✅ Stripped** — Export function, settings page, and menu items deleted.
 
 ---
 
@@ -308,7 +283,7 @@ Exports conversations to an [Obsidian](https://obsidian.md/) vault — writes ma
 
 **Dependencies** — None exclusive (direct filesystem write)
 
-**Recommendation: Evaluate** — If you use Obsidian heavily for notes, this is actually useful and lightweight (no npm packages, just file writes).
+**Status: ✅ Kept** — Retained; lightweight filesystem-based export, no extra packages.
 
 ---
 
@@ -322,7 +297,7 @@ Exports conversations to [Siyuan Note](https://b3log.org/siyuan/) — a Chinese 
 
 **Dependencies** — None exclusive
 
-**Recommendation: Strip** (Siyuan is niche, China-market focused)
+**Status: ✅ Stripped** — Export function (~130 LOC + helpers), settings page, and menu items deleted.
 
 ---
 
@@ -390,7 +365,7 @@ Syncs Cherry Studio data to [Nutstore](https://www.jianguoyun.com/) (坚果云) 
 
 **Dependencies** — None exclusive (uses WebDAV internally)
 
-**Recommendation: Strip** (China-market service)
+**Status: ✅ Stripped** — Service, SSO/lib, store, settings UI, popup, preload APIs, IPC channels, shared config all deleted.
 
 ---
 
@@ -429,7 +404,7 @@ A local AI gateway/proxy that installs itself via `npm` at runtime. It intercept
 
 **Dependencies** — None exclusive (installs its own package at runtime via npm)
 
-**Recommendation: Strip** — You're a single user with direct API access. No need for proxy middleware.
+**Status: ✅ Stripped** — Service (~1024 LOC), page, store, 17 IPC channels, 16 preload APIs deleted.
 
 ---
 
@@ -492,7 +467,7 @@ Tracks token usage statistics and sends aggregated analytics data to `@cherrystu
 @cherrystudio/analytics-client
 ```
 
-**Recommendation: Strip immediately** — You should not be sending usage data to the upstream team's servers from your personal fork.
+**Status: ✅ Stripped** — Service deleted; `utils/analytics.ts` is a no-op stub so import sites don't need changes.
 
 ---
 
@@ -609,7 +584,7 @@ A Desktop Extension system — users can install `.dxt` extension packages that 
 
 **Size** → **Medium**
 
-**Recommendation: Evaluate** — If you use MCP (Model Context Protocol) heavily, DXT is the mechanism for packaging MCP servers as installable extensions. If you configure MCP manually in settings, you don't need DXT.
+**Status: ✅ Stripped** — DxtService + tests deleted; AddMcpServerModal simplified to JSON-only; MCPService DXT resolution removed.
 
 ---
 
