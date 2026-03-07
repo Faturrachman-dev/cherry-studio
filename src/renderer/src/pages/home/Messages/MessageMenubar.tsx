@@ -30,9 +30,6 @@ import { abortCompletion } from '@renderer/utils/abortController'
 import { copyMessageAsPlainText } from '@renderer/utils/copy'
 import { isAbortError } from '@renderer/utils/error'
 import {
-  exportMarkdownToJoplin,
-  exportMarkdownToSiyuan,
-  exportMarkdownToYuque,
   exportMessageAsMarkdown,
   exportMessageToNotes,
   exportMessageToNotion,
@@ -397,38 +394,12 @@ const MessageMenubar: FC<Props> = (props) => {
               exportMessageToNotion(title, markdown, message)
             }
           },
-          exportMenuOptions.yuque && {
-            label: t('chat.topics.export.yuque'),
-            key: 'yuque',
-            onClick: async () => {
-              const title = await getMessageTitle(message)
-              const markdown = messageToMarkdown(message)
-              exportMarkdownToYuque(title, markdown)
-            }
-          },
           exportMenuOptions.obsidian && {
             label: t('chat.topics.export.obsidian'),
             key: 'obsidian',
             onClick: async () => {
               const title = topic.name?.replace(/\\/g, '_') || 'Untitled'
               await ObsidianExportPopup.show({ title, message, processingMethod: '1' })
-            }
-          },
-          exportMenuOptions.joplin && {
-            label: t('chat.topics.export.joplin'),
-            key: 'joplin',
-            onClick: async () => {
-              const title = await getMessageTitle(message)
-              exportMarkdownToJoplin(title, message)
-            }
-          },
-          exportMenuOptions.siyuan && {
-            label: t('chat.topics.export.siyuan'),
-            key: 'siyuan',
-            onClick: async () => {
-              const title = await getMessageTitle(message)
-              const markdown = messageToMarkdown(message)
-              exportMarkdownToSiyuan(title, markdown)
             }
           }
         ].filter(Boolean)

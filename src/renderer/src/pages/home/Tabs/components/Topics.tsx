@@ -25,9 +25,6 @@ import type { Assistant, Topic } from '@renderer/types'
 import { classNames, removeSpecialCharactersForFileName } from '@renderer/utils'
 import { copyTopicAsMarkdown, copyTopicAsPlainText } from '@renderer/utils/copy'
 import {
-  exportMarkdownToJoplin,
-  exportMarkdownToSiyuan,
-  exportMarkdownToYuque,
   exportTopicAsMarkdown,
   exportTopicToNotes,
   exportTopicToNotion,
@@ -470,35 +467,11 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
               exportTopicToNotion(topic)
             }
           },
-          exportMenuOptions.yuque && {
-            label: t('chat.topics.export.yuque'),
-            key: 'yuque',
-            onClick: async () => {
-              const markdown = await topicToMarkdown(topic)
-              exportMarkdownToYuque(topic.name, markdown)
-            }
-          },
           exportMenuOptions.obsidian && {
             label: t('chat.topics.export.obsidian'),
             key: 'obsidian',
             onClick: async () => {
               await ObsidianExportPopup.show({ title: topic.name, topic, processingMethod: '3' })
-            }
-          },
-          exportMenuOptions.joplin && {
-            label: t('chat.topics.export.joplin'),
-            key: 'joplin',
-            onClick: async () => {
-              const topicMessages = await TopicManager.getTopicMessages(topic.id)
-              exportMarkdownToJoplin(topic.name, topicMessages)
-            }
-          },
-          exportMenuOptions.siyuan && {
-            label: t('chat.topics.export.siyuan'),
-            key: 'siyuan',
-            onClick: async () => {
-              const markdown = await topicToMarkdown(topic)
-              exportMarkdownToSiyuan(topic.name, markdown)
             }
           }
         ].filter(Boolean) as ItemType<MenuItemType>[]
