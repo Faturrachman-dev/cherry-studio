@@ -4,7 +4,7 @@ import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'
 import type { SpanContext } from '@opentelemetry/api'
 import type { GitBashPathInfo, TerminalConfig, UpgradeChannel } from '@shared/config/constant'
 import type { LogLevel, LogSourceWithContext } from '@shared/config/logger'
-import type { FileChangeEvent, NodeCheckResult, WebviewKeyEvent } from '@shared/config/types'
+import type { FileChangeEvent, WebviewKeyEvent } from '@shared/config/types'
 import type { MCPServerLogEntry } from '@shared/config/types'
 import type { ExternalAppInfo } from '@shared/externalApp/types'
 import { IpcChannel } from '@shared/IpcChannel'
@@ -47,23 +47,6 @@ import type {
   WritePluginContentOptions
 } from '../renderer/src/types/plugin'
 import type { ActionItem } from '../renderer/src/types/selectionTypes'
-
-// OpenClaw types
-type OpenClawGatewayStatus = 'stopped' | 'starting' | 'running' | 'error'
-
-interface OpenClawHealthInfo {
-  status: 'healthy' | 'unhealthy'
-  gatewayPort: number
-  uptime?: number
-  version?: string
-}
-
-interface OpenClawChannelInfo {
-  id: string
-  name: string
-  type: string
-  status: 'connected' | 'disconnected' | 'error'
-}
 
 type DirectoryListOptions = {
   recursive?: boolean
@@ -582,30 +565,6 @@ const api = {
       ipcRenderer.invoke(IpcChannel.ClaudeCodePlugin_InstallFromZip, options),
     installFromDirectory: (options: InstallFromDirectoryOptions): Promise<PluginResult<InstallFromSourceResult>> =>
       ipcRenderer.invoke(IpcChannel.ClaudeCodePlugin_InstallFromDirectory, options)
-  },
-  openclaw: {
-    checkInstalled: (): Promise<{ installed: boolean; path: string | null }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_CheckInstalled),
-    checkNodeVersion: (): Promise<NodeCheckResult> => ipcRenderer.invoke(IpcChannel.OpenClaw_CheckNodeVersion),
-    checkGitAvailable: (): Promise<{ available: boolean; path: string | null }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_CheckGitAvailable),
-    getNodeDownloadUrl: (): Promise<string> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetNodeDownloadUrl),
-    getGitDownloadUrl: (): Promise<string> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetGitDownloadUrl),
-    install: (): Promise<{ success: boolean; message: string }> => ipcRenderer.invoke(IpcChannel.OpenClaw_Install),
-    uninstall: (): Promise<{ success: boolean; message: string }> => ipcRenderer.invoke(IpcChannel.OpenClaw_Uninstall),
-    startGateway: (port?: number): Promise<{ success: boolean; message: string }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_StartGateway, port),
-    stopGateway: (): Promise<{ success: boolean; message: string }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_StopGateway),
-    restartGateway: (): Promise<{ success: boolean; message: string }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_RestartGateway),
-    getStatus: (): Promise<{ status: OpenClawGatewayStatus; port: number }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_GetStatus),
-    checkHealth: (): Promise<OpenClawHealthInfo> => ipcRenderer.invoke(IpcChannel.OpenClaw_CheckHealth),
-    getDashboardUrl: (): Promise<string> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetDashboardUrl),
-    syncConfig: (provider: Provider, primaryModel: Model): Promise<{ success: boolean; message: string }> =>
-      ipcRenderer.invoke(IpcChannel.OpenClaw_SyncConfig, provider, primaryModel),
-    getChannels: (): Promise<OpenClawChannelInfo[]> => ipcRenderer.invoke(IpcChannel.OpenClaw_GetChannels)
   }
 }
 

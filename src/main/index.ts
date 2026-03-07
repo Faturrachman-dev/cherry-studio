@@ -21,7 +21,6 @@ import { configManager } from './services/ConfigManager'
 
 import mcpService from './services/MCPService'
 
-import { openClawService } from './services/OpenClawService'
 import { nodeTraceService } from './services/NodeTraceService'
 import powerMonitorService from './services/PowerMonitorService'
 import {
@@ -225,7 +224,6 @@ if (!app.requestSingleInstanceLock()) {
     // 简单的资源清理，不阻塞退出流程
 
     try {
-      await openClawService.stopGateway()
       await mcpService.cleanup()
     } catch (error) {
       logger.warn('Error cleaning up services:', error as Error)

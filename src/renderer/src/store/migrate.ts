@@ -3213,8 +3213,10 @@ const migrateConfig = {
   '195': (state: RootState) => {
     try {
       if (state.settings && state.settings.sidebarIcons) {
+        // @ts-ignore -- stripped feature (OpenClaw)
         // Add 'openclaw' to visible icons if not already present
         if (!state.settings.sidebarIcons.visible.includes('openclaw')) {
+          // @ts-ignore -- stripped feature (OpenClaw)
           state.settings.sidebarIcons.visible = [...state.settings.sidebarIcons.visible, 'openclaw']
         }
       }

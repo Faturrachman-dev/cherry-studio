@@ -37,7 +37,6 @@ import minapps from './minapps'
 import newMessagesReducer from './newMessage'
 import { setNotesPath } from './note'
 import note from './note'
-import openclaw from './openclaw'
 import preprocess from './preprocess'
 import runtime from './runtime'
 import selectionStore from './selectionStore'
@@ -64,7 +63,6 @@ const rootReducer = combineReducers({
   mcp,
   memory,
   copilot,
-  openclaw,
   selectionStore,
   tabs,
   preprocess,

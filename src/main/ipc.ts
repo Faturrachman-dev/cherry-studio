@@ -9,7 +9,6 @@ import anthropicService from '@main/services/AnthropicService'
 import { getIpCountry } from '@main/utils/ipService'
 import {
   autoDiscoverGitBash,
-  checkGitAvailable,
   getBinaryPath,
   getGitBashPathInfo,
   isBinaryExists,
@@ -54,7 +53,6 @@ import MemoryService from './services/memory/MemoryService'
 import { openTraceWindow, setTraceWindowTitle } from './services/NodeTraceService'
 import NotificationService from './services/NotificationService'
 import ObsidianVaultService from './services/ObsidianVaultService'
-import { openClawService } from './services/OpenClawService'
 import powerMonitorService from './services/PowerMonitorService'
 import { proxyManager } from './services/ProxyManager'
 import { pythonService } from './services/PythonService'
@@ -1061,21 +1059,4 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
   ipcMain.handle(IpcChannel.APP_CrashRenderProcess, () => {
     mainWindow.webContents.forcefullyCrashRenderer()
   })
-
-  // OpenClaw
-  ipcMain.handle(IpcChannel.OpenClaw_CheckInstalled, openClawService.checkInstalled)
-  ipcMain.handle(IpcChannel.OpenClaw_CheckNodeVersion, openClawService.checkNodeVersion)
-  ipcMain.handle(IpcChannel.OpenClaw_CheckGitAvailable, checkGitAvailable)
-  ipcMain.handle(IpcChannel.OpenClaw_GetNodeDownloadUrl, openClawService.getNodeDownloadUrl)
-  ipcMain.handle(IpcChannel.OpenClaw_GetGitDownloadUrl, openClawService.getGitDownloadUrl)
-  ipcMain.handle(IpcChannel.OpenClaw_Install, openClawService.install)
-  ipcMain.handle(IpcChannel.OpenClaw_Uninstall, openClawService.uninstall)
-  ipcMain.handle(IpcChannel.OpenClaw_StartGateway, openClawService.startGateway)
-  ipcMain.handle(IpcChannel.OpenClaw_StopGateway, openClawService.stopGateway)
-  ipcMain.handle(IpcChannel.OpenClaw_RestartGateway, openClawService.restartGateway)
-  ipcMain.handle(IpcChannel.OpenClaw_GetStatus, openClawService.getStatus)
-  ipcMain.handle(IpcChannel.OpenClaw_CheckHealth, openClawService.checkHealth)
-  ipcMain.handle(IpcChannel.OpenClaw_GetDashboardUrl, openClawService.getDashboardUrl)
-  ipcMain.handle(IpcChannel.OpenClaw_SyncConfig, openClawService.syncProviderConfig)
-  ipcMain.handle(IpcChannel.OpenClaw_GetChannels, openClawService.getChannelStatus)
 }
