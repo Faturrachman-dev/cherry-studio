@@ -16,7 +16,6 @@ import { Avatar, Tooltip } from 'antd'
 import {
   Code,
   FileSearch,
-  Folder,
   Languages,
   LayoutGrid,
   MessageSquare,
@@ -133,7 +132,6 @@ const MainMenus: FC = () => {
     translate: <Languages size={18} className="icon" />,
     minapp: <LayoutGrid size={18} className="icon" />,
     knowledge: <FileSearch size={18} className="icon" />,
-    files: <Folder size={18} className="icon" />,
     notes: <NotepadText size={18} className="icon" />,
     code_tools: <Code size={18} className="icon" />,
     openclaw: <OpenClawSidebarIcon style={{ width: 18, height: 18 }} className="icon" />
@@ -145,7 +143,6 @@ const MainMenus: FC = () => {
     translate: '/translate',
     minapp: '/apps',
     knowledge: '/knowledge',
-    files: '/files',
     code_tools: '/code',
     notes: '/notes',
     openclaw: '/openclaw'
