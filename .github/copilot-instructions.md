@@ -51,7 +51,7 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - This fork starts from `0.x.y` — independent of upstream Cherry Studio versioning
 - `0.MINOR.0` — new feature (e.g., `0.1.0` = context condensing)
 - `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
-- Bump version in `package.json`
+- Bump version in `package.json` **on every commit** — no user confirmation needed
 - Tag releases when publishing: `git tag v0.X.Y && git push --tags`
 - Current version: **0.2.1**
 
