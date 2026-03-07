@@ -657,10 +657,8 @@ export type SidebarIcon =
   | 'translate'
   | 'minapp'
   | 'knowledge'
-  | 'files'
   | 'code_tools'
   | 'notes'
-  | 'openclaw'
 
 export type ExternalToolResult = {
   mcpTools?: MCPTool[]

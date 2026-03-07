@@ -8,6 +8,29 @@ Use this as a reference checklist before stripping anything. Read through carefu
 
 ---
 
+## What "Simplified" Means (Phase 2 Strategy)
+
+Tier 2 features were handled with a **two-mode approach** rather than a blanket delete:
+
+### Mode A — Full Strip
+Used when a feature is a dead-end integration (no shared code, standalone service) or is China-market-specific. Deleted all associated pages, services, IPC handlers, preload APIs, Redux slices, and settings UI. Notable examples: Nutstore, OpenClaw, Joplin/Siyuan/Yuque, DXT, Launchpad, Files Manager.
+
+### Mode B — Simplified / Kept As-Is
+Used when a feature is:
+- Already lean (< ~700 LOC total) and has no removable dead weight
+- Deeply wired into non-feature code (e.g., overlay windows, global keyboard hooks)
+- Independently useful for a solo AI workflow
+
+In these cases the feature was left untouched rather than partially gutted — a half-removed feature is worse than either a clean strip or a clean keep. Examples: Selection Assistant, Quick Assistant, Quick Phrases, Obsidian/Notion export.
+
+### Stripping vs. Stubbing
+Some stripped features leave **minimal stubs** where cross-cutting dependencies require it:
+- `src/main/apiServer/` — stub utils/config kept because agent services import from them
+- `utils/analytics.ts` — no-op stub so all import sites don't need to change
+- `migrate.ts` — migration functions are **never deleted**, even for stripped state slices; `@ts-ignore` + optional chaining handles type safety
+
+---
+
 ## How to Read This Doc
 
 Each entry contains:
@@ -618,34 +641,44 @@ better-sqlite3   # (shared with main app DB)
 
 ## Summary Table
 
-| # | Feature | Tier | Size | Recommendation |
-|---|---------|------|------|---------------|
-| 1 | Knowledge Base / RAG | 1 | Very High | **Evaluate** |
-| 2 | Paintings / Image Gen | 1 | High | **Strip** |
-| 3 | API Server | 1 | High | **Strip** |
-| 4 | OCR | 1 | Medium+heavy deps | **Strip** |
-| 5 | LAN Transfer | 1 | High | **Strip** |
-| 6 | Export: Notion | 2 | Medium | **Strip** |
-| 7 | Export: Yuque | 2 | Low | **Strip** |
-| 8 | Export: Joplin | 2 | Low | **Strip** |
-| 9 | Export: Obsidian | 2 | Low | **Evaluate** |
-| 10 | Export: Siyuan | 2 | Low | **Strip** |
-| 11 | Export: DOCX | 2 | Low | **Evaluate** |
-| 12 | Backup: WebDAV | 2 | Medium | **Strip** |
-| 13 | Backup: S3 | 2 | Medium | **Strip** |
-| 14 | Backup: Nutstore | 2 | Low | **Strip** |
-| 15 | MinApps Marketplace | 2 | Medium | **Strip** |
-| 16 | OpenClaw Gateway | 2 | High | **Strip** |
-| 17 | Notes Editor | 2 | High | **Strip** |
-| 18 | CherryIN OAuth | 2 | Medium | **Strip** |
-| 19 | Analytics / Telemetry | 2 | Low | **Strip immediately** |
-| 20 | YouTube Integration | 2 | Low | **Strip with KB** |
-| 21 | React Player | 2 | Low | **Strip** |
+| # | Feature | Tier | Size | Status |
+|---|---------|------|------|--------|
+| 1 | Knowledge Base / RAG | 1 | Very High | ✅ **Trimmed** (sitemap loader removed; PDF, Markdown, CSV retained) |
+| 2 | Paintings / Image Gen | 1 | High | ✅ **Stripped** |
+| 3 | API Server | 1 | High | ✅ **Stripped** (minimal stubs kept for agent compat) |
+| 4 | OCR | 1 | Medium+heavy deps | ✅ **Stripped** |
+| 5 | LAN Transfer | 1 | High | ✅ **Stripped** |
+| 6 | Export: Notion | 2 | Medium | ✅ **Kept** |
+| 7 | Export: Yuque | 2 | Low | ✅ **Stripped** |
+| 8 | Export: Joplin | 2 | Low | ✅ **Stripped** |
+| 9 | Export: Obsidian | 2 | Low | ✅ **Kept** |
+| 10 | Export: Siyuan | 2 | Low | ✅ **Stripped** |
+| 11 | Export: DOCX | 2 | Low | Evaluate |
+| 12 | Backup: WebDAV | 2 | Medium | Evaluate |
+| 13 | Backup: S3 | 2 | Medium | Evaluate |
+| 14 | Backup: Nutstore | 2 | Low | ✅ **Stripped** |
+| 15 | MinApps Marketplace | 2 | Medium | Evaluate |
+| 16 | OpenClaw Gateway | 2 | High | ✅ **Stripped** |
+| 17 | Notes Editor | 2 | High | Evaluate |
+| 18 | CherryIN OAuth | 2 | Medium | Evaluate |
+| 19 | Analytics / Telemetry | 2 | Low | ✅ **Stripped** (no-op stub) |
+| 20 | YouTube Integration | 2 | Low | Evaluate |
+| 21 | React Player | 2 | Low | Evaluate |
 | 22 | Translate Page | 3 | Low | **Keep** |
-| 23 | Code Tools | 3 | High | **Evaluate** |
+| 23 | Code Tools | 3 | High | Evaluate |
 | 24 | Memory System | 3 | Low | **Keep** |
-| 25 | DXT Extensions | 3 | Medium | **Evaluate** |
+| 25 | DXT Extensions | 3 | Medium | ✅ **Stripped** |
 | 26 | Agents DB (Drizzle) | 3 | High | **Keep** |
+
+### Also stripped in Tier 2:
+
+| Feature | Status |
+|---------|--------|
+| Launchpad Page | ✅ Stripped — page deleted; default tab → `/` |
+| Files Manager Page | ✅ Stripped — pages deleted; `FileItem` extracted to shared component |
+| Selection Assistant | ✅ Kept — small, deeply integrated |
+| Quick Assistant | ✅ Kept — ~660 LOC, already lean |
+| Quick Phrases | ✅ Kept — ~270 LOC, barebones |
 
 ---
 

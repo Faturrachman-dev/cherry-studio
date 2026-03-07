@@ -17,12 +17,10 @@ import type { Tab } from '@renderer/store/tabs'
 import { addTab, removeTab, setActiveTab, setTabs } from '@renderer/store/tabs'
 import type { MinAppType } from '@renderer/types'
 import { ThemeMode } from '@renderer/types'
-import { classNames } from '@renderer/utils'
 import { Tooltip } from 'antd'
 import type { LRUCache } from 'lru-cache'
 import {
   FileSearch,
-  Folder,
   Home,
   Languages,
   LayoutGrid,
@@ -43,7 +41,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import MinAppIcon from '../Icons/MinAppIcon'
-import { OpenClawIcon } from '../Icons/SVGIcon'
 import MinAppTabsPool from '../MinApp/MinAppTabsPool'
 import WindowControls from '../WindowControls'
 
@@ -107,21 +104,17 @@ const getTabIcon = (
       return <NotepadText size={14} />
     case 'knowledge':
       return <FileSearch size={14} />
-    case 'files':
-      return <Folder size={14} />
     case 'settings':
       return <Settings size={14} />
     case 'code':
       return <Terminal size={14} />
-    case 'openclaw':
-      return <OpenClawIcon style={{ width: 14, height: 14 }} />
     default:
       return null
   }
 }
 
 let lastSettingsPath = '/settings/provider'
-const specialTabs = ['launchpad', 'settings']
+const specialTabs = ['settings']
 
 const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
   const location = useLocation()
@@ -229,7 +222,7 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
 
   const handleAddTab = () => {
     hideMinappPopup()
-    navigate('/launchpad')
+    navigate('/')
   }
 
   const handleSettingsClick = () => {
@@ -293,7 +286,7 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
               </Tab>
             )}
           />
-          <AddTabButton onClick={handleAddTab} className={classNames({ active: activeTabId === 'launchpad' })}>
+          <AddTabButton onClick={handleAddTab}>
             <PlusOutlined />
           </AddTabButton>
         </HorizontalScrollContainer>

@@ -20,15 +20,6 @@ test.describe('Navigation', () => {
     expect(currentUrl).toContain('/settings')
   })
 
-  test('should navigate to Files page', async ({ mainWindow }) => {
-    await sidebarPage.goToFiles()
-
-    await mainWindow.waitForTimeout(1000)
-
-    const currentUrl = mainWindow.url()
-    expect(currentUrl).toContain('/files')
-  })
-
   test('should navigate back to Home', async ({ mainWindow }) => {
     // First go to settings
     await sidebarPage.goToSettings()

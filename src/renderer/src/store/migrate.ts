@@ -2190,8 +2190,11 @@ const migrateConfig = {
       if (state.settings && state.settings.openAI && !state.settings.openAI.verbosity) {
         state.settings.openAI.verbosity = 'medium'
       }
+      // @ts-ignore -- stripped feature
       // 为 nutstore 添加备份数量限制的默认值
+      // @ts-ignore -- stripped feature
       if (state.nutstore && state.nutstore.nutstoreMaxBackups === undefined) {
+        // @ts-ignore -- stripped feature
         state.nutstore.nutstoreMaxBackups = 0
       }
       return state
@@ -3210,8 +3213,10 @@ const migrateConfig = {
   '195': (state: RootState) => {
     try {
       if (state.settings && state.settings.sidebarIcons) {
+        // @ts-ignore -- stripped feature (OpenClaw)
         // Add 'openclaw' to visible icons if not already present
         if (!state.settings.sidebarIcons.visible.includes('openclaw')) {
+          // @ts-ignore -- stripped feature (OpenClaw)
           state.settings.sidebarIcons.visible = [...state.settings.sidebarIcons.visible, 'openclaw']
         }
       }
@@ -3242,7 +3247,9 @@ const migrateConfig = {
   },
   '197': (state: RootState) => {
     try {
-      if (state.openclaw.gatewayPort === 18789) {
+      // @ts-ignore -- stripped feature (OpenClaw)
+      if (state.openclaw?.gatewayPort === 18789) {
+        // @ts-ignore -- stripped feature (OpenClaw)
         state.openclaw.gatewayPort = 18790
       }
       return state

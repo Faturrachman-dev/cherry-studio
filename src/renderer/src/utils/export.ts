@@ -679,73 +679,6 @@ export const exportTopicToNotion = async (topic: Topic): Promise<boolean> => {
   return executeNotionExport(topic.name, allBlocks)
 }
 
-export const exportMarkdownToYuque = async (title: string, content: string): Promise<any | null> => {
-  const { yuqueToken, yuqueRepoId } = store.getState().settings
-
-  if (getExportState()) {
-    window.toast.warning(i18n.t('message.warn.export.exporting'))
-    return
-  }
-
-  if (!yuqueToken || !yuqueRepoId) {
-    window.toast.error(i18n.t('message.error.yuque.no_config'))
-    return
-  }
-
-  setExportingState(true)
-
-  try {
-    const response = await fetch(`https://www.yuque.com/api/v2/repos/${yuqueRepoId}/docs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Token': yuqueToken,
-        'User-Agent': 'CherryAI'
-      },
-      body: JSON.stringify({
-        title: title,
-        slug: Date.now().toString(), // 使用时间戳作为唯一slug
-        format: 'markdown',
-        body: content
-      })
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const data = await response.json()
-    const doc_id = data.data.id
-
-    const tocResponse = await fetch(`https://www.yuque.com/api/v2/repos/${yuqueRepoId}/toc`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Token': yuqueToken,
-        'User-Agent': 'CherryAI'
-      },
-      body: JSON.stringify({
-        action: 'appendNode',
-        action_mode: 'sibling',
-        doc_ids: [doc_id]
-      })
-    })
-
-    if (!tocResponse.ok) {
-      throw new Error(`HTTP error! status: ${tocResponse.status}`)
-    }
-
-    window.toast.success(i18n.t('message.success.yuque.export'))
-    return data
-  } catch (error: any) {
-    logger.debug(error)
-    window.toast.error(i18n.t('message.error.yuque.export'))
-    return null
-  } finally {
-    setExportingState(false)
-  }
-}
-
 /**
  * 导出Markdown到Obsidian
  * @param attributes 文档属性
@@ -868,183 +801,6 @@ function transformObsidianFileName(fileName: string): string {
   return sanitized
 }
 
-export const exportMarkdownToJoplin = async (
-  title: string,
-  contentOrMessages: string | Message | Message[]
-): Promise<any | null> => {
-  const { joplinUrl, joplinToken, joplinExportReasoning, excludeCitationsInExport } = store.getState().settings
-
-  if (getExportState()) {
-    window.toast.warning(i18n.t('message.warn.export.exporting'))
-    return
-  }
-
-  if (!joplinUrl || !joplinToken) {
-    window.toast.error(i18n.t('message.error.joplin.no_config'))
-    return
-  }
-
-  setExportingState(true)
-
-  let content: string
-  if (typeof contentOrMessages === 'string') {
-    content = contentOrMessages
-  } else if (Array.isArray(contentOrMessages)) {
-    content = messagesToMarkdown(contentOrMessages, joplinExportReasoning, excludeCitationsInExport)
-  } else {
-    // 单条Message
-    content = joplinExportReasoning
-      ? messageToMarkdownWithReasoning(contentOrMessages, excludeCitationsInExport)
-      : messageToMarkdown(contentOrMessages, excludeCitationsInExport)
-  }
-
-  try {
-    const baseUrl = joplinUrl.endsWith('/') ? joplinUrl : `${joplinUrl}/`
-    const response = await fetch(`${baseUrl}notes?token=${joplinToken}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: title,
-        body: content,
-        source: 'Cherry Studio'
-      })
-    })
-
-    if (!response.ok) {
-      throw new Error('service not available')
-    }
-
-    const data = await response.json()
-    if (data?.error) {
-      throw new Error('response error')
-    }
-
-    window.toast.success(i18n.t('message.success.joplin.export'))
-    return data
-  } catch (error: any) {
-    logger.error('Failed to export to Joplin:', error)
-    window.toast.error(i18n.t('message.error.joplin.export'))
-    return null
-  } finally {
-    setExportingState(false)
-  }
-}
-
-/**
- * 导出Markdown到思源笔记
- * @param title 笔记标题
- * @param content 笔记内容
- */
-export const exportMarkdownToSiyuan = async (title: string, content: string): Promise<void> => {
-  const { siyuanApiUrl, siyuanToken, siyuanBoxId, siyuanRootPath } = store.getState().settings
-
-  if (getExportState()) {
-    window.toast.warning(i18n.t('message.warn.export.exporting'))
-    return
-  }
-
-  if (!siyuanApiUrl || !siyuanToken || !siyuanBoxId) {
-    window.toast.error(i18n.t('message.error.siyuan.no_config'))
-    return
-  }
-
-  setExportingState(true)
-
-  try {
-    // test connection
-    const testResponse = await fetch(`${siyuanApiUrl}/api/notebook/lsNotebooks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${siyuanToken}`
-      }
-    })
-
-    if (!testResponse.ok) {
-      throw new Error('API请求失败')
-    }
-
-    const testData = await testResponse.json()
-    if (testData.code !== 0) {
-      throw new Error(`${testData.msg || i18n.t('message.error.unknown')}`)
-    }
-
-    // 确保根路径以/开头
-    const rootPath = siyuanRootPath?.startsWith('/') ? siyuanRootPath : `/${siyuanRootPath || 'CherryStudio'}`
-    const renderedRootPath = await renderSprigTemplate(siyuanApiUrl, siyuanToken, rootPath)
-    // 创建文档
-    const docTitle = `${title.replace(/[#|\\^\\[\]]/g, '')}`
-    const docPath = `${renderedRootPath}/${docTitle}`
-
-    // 创建文档
-    await createSiyuanDoc(siyuanApiUrl, siyuanToken, siyuanBoxId, docPath, content)
-
-    window.toast.success(i18n.t('message.success.siyuan.export'))
-  } catch (error) {
-    logger.error('Failed to export to Siyuan:', error as Error)
-    window.toast.error(i18n.t('message.error.siyuan.export') + (error instanceof Error ? `: ${error.message}` : ''))
-  } finally {
-    setExportingState(false)
-  }
-}
-/**
- * 渲染 思源笔记 Sprig 模板字符串
- * @param apiUrl 思源 API 地址
- * @param token 思源 API Token
- * @param template Sprig 模板
- * @returns 渲染后的字符串
- */
-async function renderSprigTemplate(apiUrl: string, token: string, template: string): Promise<string> {
-  const response = await fetch(`${apiUrl}/api/template/renderSprig`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Token ${token}`
-    },
-    body: JSON.stringify({ template })
-  })
-
-  const data = await response.json()
-  if (data.code !== 0) {
-    throw new Error(`${data.msg || i18n.t('message.error.unknown')}`)
-  }
-
-  return data.data
-}
-
-/**
- * 创建思源笔记文档
- */
-async function createSiyuanDoc(
-  apiUrl: string,
-  token: string,
-  boxId: string,
-  path: string,
-  markdown: string
-): Promise<string> {
-  const response = await fetch(`${apiUrl}/api/filetree/createDocWithMd`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Token ${token}`
-    },
-    body: JSON.stringify({
-      notebook: boxId,
-      path: path,
-      markdown: markdown
-    })
-  })
-
-  const data = await response.json()
-  if (data.code !== 0) {
-    throw new Error(`${data.msg || i18n.t('message.error.unknown')}`)
-  }
-
-  return data.data
-}
-
 /**
  * 导出消息到笔记工作区
  * @returns 创建的笔记节点
@@ -1143,7 +899,7 @@ const exportNoteAsImageFile = async (noteName: string): Promise<void> => {
 
 interface NoteExportOptions {
   node: { name: string; externalPath: string }
-  platform: 'markdown' | 'docx' | 'notion' | 'yuque' | 'obsidian' | 'joplin' | 'siyuan' | 'copyImage' | 'exportImage'
+  platform: 'markdown' | 'docx' | 'notion' | 'obsidian' | 'copyImage' | 'exportImage'
 }
 
 export const exportNote = async ({ node, platform }: NoteExportOptions): Promise<void> => {
@@ -1163,20 +919,11 @@ export const exportNote = async ({ node, platform }: NoteExportOptions): Promise
       case 'notion':
         await exportMessageToNotion(node.name, content)
         return
-      case 'yuque':
-        await exportMarkdownToYuque(node.name, `# ${node.name}\n\n${content}`)
-        return
       case 'obsidian': {
         const { default: ObsidianExportPopup } = await import('@renderer/components/Popups/ObsidianExportPopup')
         await ObsidianExportPopup.show({ title: node.name, processingMethod: '1', rawContent: content })
         return
       }
-      case 'joplin':
-        await exportMarkdownToJoplin(node.name, content)
-        return
-      case 'siyuan':
-        await exportMarkdownToSiyuan(node.name, `# ${node.name}\n\n${content}`)
-        return
     }
   } catch (error) {
     logger.error(`Failed to export note to ${platform}:`, error as Error)

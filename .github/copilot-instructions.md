@@ -53,7 +53,7 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 - `0.MINOR.PATCH` — hotfix on that feature (e.g., `0.1.1`)
 - Bump version in `package.json`
 - Tag releases when publishing: `git tag v0.X.Y && git push --tags`
-- Current version: **0.1.1**
+- Current version: **0.2.0**
 
 ### Things to Never Commit
 - Debug/test files, `.env` files, secrets
@@ -110,6 +110,21 @@ This is **Owner's fork** of [Cherry Studio](https://github.com/CherryHQ/cherry-s
 | LAN Transfer | ✅ Stripped | Services, IPC handlers, popup deleted |
 | Analytics/Telemetry | ✅ Stripped | Service deleted; `utils/analytics.ts` is a no-op stub |
 | Knowledge Base (partial) | ✅ Trimmed | Sitemap loader removed; PDF, Markdown, CSV retained |
+
+## Stripped Features (Tier 2 — Completed)
+
+| Feature | Status | Approach |
+|---------|--------|----------|
+| Launchpad Page | ✅ Stripped | Page deleted; TabContainer default tab → `/`; sidebar/router cleaned |
+| Files Manager Page | ✅ Stripped | Pages deleted; `FileItem` extracted to `src/renderer/src/components/FileItem.tsx` (shared by 9 files) |
+| Joplin/Siyuan/Yuque Exports | ✅ Stripped | Settings pages, export functions, menu items deleted; Notion/Obsidian retained |
+| Nutstore Sync | ✅ Stripped | Service, SSO/lib, store, settings UI, popup, preload, IPC, shared config deleted |
+| DXT Plugin System | ✅ Stripped | DxtService + tests deleted; AddMcpServerModal simplified to JSON-only; MCPService DXT resolution removed |
+| OpenClaw Gateway | ✅ Stripped | Service (~1024 LOC), page, store, 17 IPC channels, 16 preload APIs deleted |
+| Selection Assistant | ✅ Kept | Small, deeply integrated — left as-is |
+| Quick Assistant | ✅ Kept | ~660 LOC, already lean — left as-is |
+| Quick Phrases | ✅ Kept | ~270 LOC, barebones — left as-is |
+| Obsidian/Notion Export | ✅ Kept | Already retained during Joplin/Siyuan/Yuque strip |
 
 ## Performance Optimizations (Completed)
 

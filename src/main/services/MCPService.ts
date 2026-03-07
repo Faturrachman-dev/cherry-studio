@@ -56,7 +56,6 @@ import { v4 as uuidv4 } from 'uuid'
 import * as z from 'zod'
 
 import { CacheService } from './CacheService'
-import DxtService from './DxtService'
 import { CallBackServer } from './mcp/oauth/callback'
 import { McpOAuthClientProvider } from './mcp/oauth/provider'
 import { ServerLogBuffer } from './mcp/ServerLogBuffer'
@@ -144,7 +143,6 @@ function withCache<T extends unknown[], R>(
 class McpService {
   private clients: Map<string, Client> = new Map()
   private pendingClients: Map<string, Promise<Client>> = new Map()
-  private dxtService = new DxtService()
   private activeToolCalls: Map<string, AbortController> = new Map()
   private serverLogs = new ServerLogBuffer(200)
 
@@ -298,7 +296,7 @@ class McpService {
         // Create new client instance for each connection
         const client = new Client({ name: 'Cherry Studio', version: app.getVersion() }, { capabilities: {} })
 
-        let args = [...(server.args || [])]
+        const args = [...(server.args || [])]
 
         // let transport: StdioClientTransport | SSEClientTransport | InMemoryTransport | StreamableHTTPClientTransport
         const authProvider = new McpOAuthClientProvider({
@@ -385,26 +383,7 @@ class McpService {
             // Note: getLoginShellEnvironment() is memoized, so subsequent calls are fast
             const loginShellEnv = await getLoginShellEnvironment()
 
-            // For DXT servers, use resolved configuration with platform overrides and variable substitution
-            if (server.dxtPath) {
-              const resolvedConfig = this.dxtService.getResolvedMcpConfig(server.dxtPath)
-              if (resolvedConfig) {
-                cmd = resolvedConfig.command
-                args = resolvedConfig.args
-                // Merge resolved environment variables with existing ones
-                server.env = {
-                  ...server.env,
-                  ...resolvedConfig.env
-                }
-                getServerLogger(server).debug(`Using resolved DXT config`, {
-                  command: cmd,
-                  args
-                })
-              } else {
-                getServerLogger(server).warn(`Failed to resolve DXT config, falling back to manifest values`)
-              }
-            }
-
+            // Resolve command for different environments
             if (server.command === 'npx') {
               // First, check if npx is available in user's shell environment
               const npxPath = await findCommandInShellEnv('npx', loginShellEnv)
@@ -763,16 +742,9 @@ class McpService {
       await this.closeClient(serverKey)
     }
 
-    // If this is a DXT server, cleanup its directory
+    // If this is a DXT server with a path, log it but skip cleanup (DxtService removed)
     if (server.dxtPath) {
-      try {
-        const cleaned = this.dxtService.cleanupDxtServer(server.name)
-        if (cleaned) {
-          getServerLogger(server).debug(`Cleaned up DXT server directory`)
-        }
-      } catch (error) {
-        getServerLogger(server).error(`Failed to cleanup DXT server`, error as Error)
-      }
+      getServerLogger(server).debug(`DXT server detected but DxtService was stripped, skipping cleanup`)
     }
   }
 
