@@ -2190,8 +2190,11 @@ const migrateConfig = {
       if (state.settings && state.settings.openAI && !state.settings.openAI.verbosity) {
         state.settings.openAI.verbosity = 'medium'
       }
+      // @ts-ignore -- stripped feature
       // 为 nutstore 添加备份数量限制的默认值
+      // @ts-ignore -- stripped feature
       if (state.nutstore && state.nutstore.nutstoreMaxBackups === undefined) {
+        // @ts-ignore -- stripped feature
         state.nutstore.nutstoreMaxBackups = 0
       }
       return state
