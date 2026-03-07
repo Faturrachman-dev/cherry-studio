@@ -22,7 +22,6 @@ import type {
   MemoryConfig,
   MemoryListOptions,
   MemorySearchOptions,
-  Model,
   Provider,
   S3Config,
   Shortcut,

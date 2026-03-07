@@ -3247,7 +3247,9 @@ const migrateConfig = {
   },
   '197': (state: RootState) => {
     try {
-      if (state.openclaw.gatewayPort === 18789) {
+      // @ts-ignore -- stripped feature (OpenClaw)
+      if (state.openclaw?.gatewayPort === 18789) {
+        // @ts-ignore -- stripped feature (OpenClaw)
         state.openclaw.gatewayPort = 18790
       }
       return state

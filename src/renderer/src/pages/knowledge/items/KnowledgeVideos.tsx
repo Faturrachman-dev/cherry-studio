@@ -18,7 +18,7 @@ import styled from 'styled-components'
 
 const logger = loggerService.withContext('KnowledgeVideos')
 
-import FileItem from '@renderer/pages/files/FileItem'
+import FileItem from '@renderer/components/FileItem'
 import { formatFileSize } from '@renderer/utils'
 
 import StatusIcon from '../components/StatusIcon'

@@ -657,7 +657,6 @@ export type SidebarIcon =
   | 'translate'
   | 'minapp'
   | 'knowledge'
-  | 'files'
   | 'code_tools'
   | 'notes'
 
