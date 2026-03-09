@@ -11,7 +11,6 @@ env:
 
 jobs:
   stale:
-    if: github.repository_owner == 'CherryHQ'
     runs-on: ubuntu-latest
     permissions:
       actions: write # Workaround for https://github.com/actions/stale/issues/1090
